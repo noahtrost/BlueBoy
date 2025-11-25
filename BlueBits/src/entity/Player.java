@@ -16,6 +16,7 @@ public class Player extends Entity {
 
 	public final int screenX;
 	public final int screenY;
+	public int hasKey = 0;
 
 	public Player(GamePanel gp, KeyHandler keyH) {
 		this.gp = gp;
@@ -34,6 +35,8 @@ public class Player extends Entity {
 	public void setDefaultValues() {
 		worldX = gp.tileSize * 23;
 		worldY = gp.tileSize * 21;
+		defaultSolidX = 8;
+		defaultSolidY = 16;
 		speed = 4;
 		direction = "down";
 	}
@@ -78,9 +81,16 @@ public class Player extends Entity {
 				direction = "left";
 
 			}
-			// CHECK TIL COLLISION
+			
 			collisionOn = false;
+			
+			// CHECK TILE COLLISION
 			gp.cc.checkTile(this);
+			
+			// CHECK OBJECT COLLISION
+			int objIndex = gp.cc.checkObject(this, true);
+			pickUpObject(objIndex);
+			
 			if (collisionOn == false) {
 				if (direction.equals("up"))
 					worldY -= speed;
@@ -102,6 +112,37 @@ public class Player extends Entity {
 				spriteCounter = 0;
 			}
 		}
+	}
+
+	public void pickUpObject(int index) {
+		
+		if (index == -1)return;
+		String objName = gp.obj[index].name;
+
+		switch (objName) {
+		case "key":
+			hasKey++;
+			gp.obj[index] = null;
+			System.out.println("Keys: " +hasKey);
+			break;
+			
+		case "door":
+			if (hasKey == 0) break;
+			hasKey--;
+			System.out.println("Keys: " +hasKey);
+			gp.obj[index] = null;
+			break;
+			
+		case "boots":
+			speed += 1;
+			gp.obj[index] = null;
+			break;
+		case "chest":
+			System.out.println("You won ");
+			gp.gameThread = null;
+		}
+		
+		
 	}
 
 	public void draw(Graphics2D g2) {

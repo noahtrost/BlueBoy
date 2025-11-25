@@ -1,6 +1,7 @@
 package main;
 
 import entity.Entity;
+import object.SuperObject;
 
 public class CollisionChecker {
 	
@@ -62,5 +63,55 @@ public class CollisionChecker {
 			}
 			break;
 		}
+	}
+	
+	public int checkObject(Entity e, boolean player) {
+	
+		int index = -1;
+		
+		for(int i = 0; i < gp.obj.length; i++) {
+			
+			if(gp.obj[i] == null) continue;
+			if(intersects(e,gp.obj[i])) {
+				
+				if(gp.obj[i].collision) e.collisionOn = true;
+				index = i;
+				
+			}
+		}
+		return index;
+	}
+
+	private boolean intersects(Entity e, SuperObject o) {
+		// calculate position player
+		int left = e.worldX + e.solidArea.x;
+		int right = e.worldX + e.solidArea.x + e.solidArea.width;
+		int top = e.worldY + e.solidArea.y;
+		int bottom = e.worldY + e.solidArea.y + e.solidArea.height;
+
+		// calculate objects position
+		int oLeft = o.worldX + o.solidArea.x;
+		int oRight = o.worldX + o.solidArea.x + o.solidArea.width;
+		int oTop = o.worldY + o.solidArea.y;
+		int oBottom = o.worldY + o.solidArea.y + o.solidArea.height;
+
+		// calculate players next position
+		switch (e.direction) {
+		case "up":
+			top -= e.speed;
+			break;
+		case "down":
+			bottom += e.speed;
+			break;
+		case "left":
+			left -= e.speed;
+			break;
+		case "right":
+			right += e.speed;
+			break;
+		}
+		
+		//check intersection (Hard Intersection)
+		return (!(left > oRight || right < oLeft || top > oBottom || bottom < oTop));
 	}
 }
