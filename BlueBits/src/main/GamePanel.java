@@ -56,6 +56,10 @@ public class GamePanel extends JPanel implements Runnable {
 	//AssetSetter
 	public AssetSetter as = new AssetSetter(this);
 	
+	//SoundManager
+	public SoundManager soundManager = new SoundManager();
+	public SoundManager soundEffectManager = new SoundManager();
+	
 	public GamePanel() {
 		this.setPreferredSize(new Dimension(screenWidth, screenHeight));
 		this.setBackground(Color.black);
@@ -66,8 +70,24 @@ public class GamePanel extends JPanel implements Runnable {
 	
 	public void setupGame() {
 		as.setObject();
+		playMusic();
 	}
 	
+	private void playMusic() {
+		soundManager.setSound(0);
+		soundManager.play();
+		soundManager.loop();
+	}
+	
+	private void stopMusic() {
+		soundManager.stop();
+	}
+	
+	public void playSE(int i) {
+		soundEffectManager.setSound(i);
+		soundEffectManager.play();
+	}
+
 	public void startGameThread() {
 		gameThread = new Thread(this);
 		gameThread.start();
