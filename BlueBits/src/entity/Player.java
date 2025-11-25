@@ -122,27 +122,34 @@ public class Player extends Entity {
 			gp.playSE(2);
 			hasKey++;
 			gp.obj[index] = null;
-			System.out.println("Keys: " + hasKey);
+			gp.ui.message = "key collected!";
+			gp.ui.messageOn = true;
 			break;
 
 		case "door":
 			if (hasKey == 0) {
+				gp.ui.message = "missing key";
+				gp.ui.messageOn = true;
 				break;
 			}
 			gp.playSE(5);
 			hasKey--;
-			System.out.println("Keys: " + hasKey);
+			gp.ui.message = "door unlocked!";
+			gp.ui.messageOn = true;
 			gp.obj[index] = null;
 			break;
 
 		case "boots":
 			gp.playSE(4);
 			speed += 1;
+			gp.ui.message = "more speed!";
+			gp.ui.messageOn = true;
 			gp.obj[index] = null;
 			break;
 		case "chest":
 			gp.playSE(3);
-			System.out.println("You won ");
+			gp.ui.message = "You Won!";
+			gp.ui.messageOn = true;
 			gp.gameThread = null;
 		}
 

@@ -60,6 +60,9 @@ public class GamePanel extends JPanel implements Runnable {
 	public SoundManager soundManager = new SoundManager();
 	public SoundManager soundEffectManager = new SoundManager();
 	
+	//UI
+	public UI ui = new UI(this);
+	
 	public GamePanel() {
 		this.setPreferredSize(new Dimension(screenWidth, screenHeight));
 		this.setBackground(Color.black);
@@ -125,6 +128,7 @@ public class GamePanel extends JPanel implements Runnable {
 				timer = 0;
 			}
 		}
+		stopMusic();
 	} 
 	
 	
@@ -133,20 +137,29 @@ public class GamePanel extends JPanel implements Runnable {
 	}
 	
 	public void paintComponent(Graphics g) {
-		
+
 		super.paintComponent(g);
 		Graphics2D g2 = (Graphics2D) g;
-		
-		//Tile
+
+		long startDraw = System.nanoTime();
+
+		// Tile
 		tileM.draw(g2);
-		
-		//Object
-		for(int i = 0; i < obj.length; i++) {
-			if(obj[i] != null) obj[i].draw(g2, this);
+
+		// Object
+		for (int i = 0; i < obj.length; i++) {
+			if (obj[i] != null)
+				obj[i].draw(g2, this);
 		}
-		
-		//Player
+
+		// Player
 		player.draw(g2);
+
+		// UI
+		ui.draw(g2, startDraw);
+
+		
+
 		g2.dispose();
 		Toolkit.getDefaultToolkit().sync();
 	}
