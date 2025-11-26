@@ -3,8 +3,13 @@ package object;
 import java.awt.Graphics2D;
 import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
+import java.io.IOException;
+
+import javax.imageio.ImageIO;
 
 import main.GamePanel;
+import main.UtilityTool;
+import tile.Tile;
 
 public class SuperObject {
 
@@ -15,6 +20,7 @@ public class SuperObject {
 	public Rectangle solidArea = new Rectangle(0,0,48,48);
 	public int solidDefaultX = 0;
 	public int solidDefaultY = 0;
+	public GamePanel gp;
 	
 	
 	public void draw(Graphics2D g2, GamePanel gp) {

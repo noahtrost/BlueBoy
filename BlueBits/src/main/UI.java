@@ -45,7 +45,7 @@ public class UI {
 			text = "You found the Treasure!";
 			x = g2.getFontMetrics().stringWidth(text);
 			x = (gp.screenWidth - x) / 2;
-			g2.drawString(text, x, y + gp.tileSize);
+			g2.drawString(text, x, y + gp.tileSize*2);
 			
 		} else {
 

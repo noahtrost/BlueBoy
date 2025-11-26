@@ -1,6 +1,7 @@
 package tile;
 
 import java.awt.Graphics2D;
+import java.awt.image.BufferedImage;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -9,6 +10,7 @@ import java.io.InputStreamReader;
 import javax.imageio.ImageIO;
 
 import main.GamePanel;
+import main.UtilityTool;
 
 public class TileManager {
 	GamePanel gp;
@@ -51,70 +53,60 @@ public class TileManager {
 	}
 
 	public void getTileImage() {
+		setup(0, "grass", false);
+		setup(1, "wall", true);
+		setup(2, "water", true);
+		setup(3, "earth", false);
+		setup(4, "tree", true);
+		setup(5, "sand", false);
+	}
+
+	public void setup(int index, String imagePath, boolean collision) {
+		
+		UtilityTool uTool = new UtilityTool();
+		
 		try {
-
-			tile[0] = new Tile();
-			tile[0].image = ImageIO.read(getClass().getResourceAsStream("/tiles/grass.png"));
-
-			tile[1] = new Tile();
-			tile[1].image = ImageIO.read(getClass().getResourceAsStream("/tiles/wall.png"));
-			tile[1].collision = true;
-
-			tile[2] = new Tile();
-			tile[2].image = ImageIO.read(getClass().getResourceAsStream("/tiles/water.png"));
-			tile[2].collision = true;
-			
-			tile[3] = new Tile();
-			tile[3].image = ImageIO.read(getClass().getResourceAsStream("/tiles/earth.png"));
-
-			tile[4] = new Tile();
-			tile[4].image = ImageIO.read(getClass().getResourceAsStream("/tiles/tree.png"));
-			tile[4].collision = true;
-			
-			tile[5] = new Tile();
-			tile[5].image = ImageIO.read(getClass().getResourceAsStream("/tiles/sand.png"));
-
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+			tile[index] = new Tile();
+			tile[index].image = tile[index].image = ImageIO.read(getClass().getResourceAsStream("/tiles/"+imagePath+".png"));
+			tile[index].image = uTool.scaleImage(tile[index].image, gp.tileSize, gp.tileSize);
+			tile[index].collision = collision;
+		} catch (IOException e) {}
 	}
 
 	public void draw(Graphics2D g2) {
-		int worldCol = gp.player.worldX / gp.tileSize - gp.maxScreenCol / 2;
-		int worldRow = gp.player.worldY / gp.tileSize - gp.maxScreenRow / 2 ;
-		
-		if (worldCol < 0)
-			worldCol = 0;
-		if (worldRow < 0) 
-			worldRow = 0;
 
-		int worldColLim = worldCol + gp.maxScreenCol + 1;
-		if (worldColLim > gp.maxWorldCol)
-			worldColLim = gp.maxWorldCol;
+		int leftWorldCol = (gp.player.worldX - gp.player.screenX) / gp.tileSize - 1;
+		int rightWorldCol = (gp.player.worldX + gp.player.screenX) / gp.tileSize + 1;
+		int topWorldRow = (gp.player.worldY - gp.player.screenY) / gp.tileSize - 1;
+		int bottomWorldRow = (gp.player.worldY + gp.player.screenY) / gp.tileSize + 1;
 
-		int worldRowLim = worldRow + gp.maxScreenRow + 1;
-		if (worldRowLim > gp.maxWorldRow)
-			worldRowLim = gp.maxWorldRow;
+		if (leftWorldCol < 0)
+			leftWorldCol = 0;
+		if (topWorldRow < 0)
+			topWorldRow = 0;
+		if (rightWorldCol >= gp.maxWorldCol)
+			rightWorldCol = gp.maxWorldCol - 1;
+		if (bottomWorldRow >= gp.maxWorldRow)
+			bottomWorldRow = gp.maxWorldRow - 1;
 
-		int startX = worldCol;
-		while (worldRow <= worldRowLim) {
+		int worldX;
+		int worldY;
+		int screenX;
+		int screenY;
 
-			int tileNum = mapTileNum[worldCol][worldRow];
+		for (int col = leftWorldCol; col <= rightWorldCol; col++) {
+			for (int row = topWorldRow; row <= bottomWorldRow; row++) {
 
-			int worldX = worldCol * gp.tileSize;
-			int worldY = worldRow * gp.tileSize;
-			int screenX = worldX - gp.player.worldX + gp.player.screenX;
-			int screenY = worldY - gp.player.worldY + gp.player.screenY;
+				worldX = col * gp.tileSize;
+				worldY = row * gp.tileSize;
 
-			g2.drawImage(tile[tileNum].image, screenX, screenY, gp.tileSize, gp.tileSize, null);
+				screenX = worldX - gp.player.worldX + gp.player.screenX;
+				screenY = worldY - gp.player.worldY + gp.player.screenY;
 
-			worldCol++;
-
-			if (!(worldCol <= worldColLim)) {
-				worldCol = startX;
-				worldRow++;
+				BufferedImage image = tile[mapTileNum[col][row]].image;
+				g2.drawImage(image, screenX, screenY, gp.tileSize, gp.tileSize, null);
 			}
+
 		}
 	}
-
 }
