@@ -17,7 +17,6 @@ public class Player extends Entity {
 
 	public final int screenX;
 	public final int screenY;
-	public int hasKey = 0;
 
 	public Player(GamePanel gp, KeyHandler keyH) {
 		this.gp = gp;
@@ -120,6 +119,8 @@ public class Player extends Entity {
 				}
 				spriteCounter = 0;
 			}
+		} else {
+			spriteNum = 1;
 		}
 	}
 
@@ -127,44 +128,9 @@ public class Player extends Entity {
 
 		if (index == -1)
 			return;
-		String objName = gp.obj[index].name;
 
-		switch (objName) {
-		case "key":
-			gp.playSE(2);
-			hasKey++;
-			gp.obj[index] = null;
-			gp.ui.message = "key collected!";
-			gp.ui.messageOn = true;
-			break;
-
-		case "door":
-			if (hasKey == 0) {
-				gp.ui.message = "missing key";
-				gp.ui.messageOn = true;
-				break;
-			}
-			gp.playSE(5);
-			hasKey--;
-			gp.ui.message = "door unlocked!";
-			gp.ui.messageOn = true;
-			gp.obj[index] = null;
-			break;
-
-		case "boots":
-			gp.playSE(4);
-			speed += 1;
-			gp.ui.message = "more speed!";
-			gp.ui.messageOn = true;
-			gp.obj[index] = null;
-			break;
-		case "chest":
-			gp.playSE(3);
-			gp.ui.message = "You Won!";
-			gp.ui.messageOn = true;
-			gp.gameThread = null;
-		}
-
+		
+		
 	}
 
 	public void draw(Graphics2D g2) {

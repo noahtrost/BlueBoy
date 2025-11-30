@@ -34,9 +34,13 @@ public class GamePanel extends JPanel implements Runnable {
 	
 	//FPS
 	final int FPS = 60;
+	public static int FRAMECOUNT;
+
+	//UtitilityTool
+	public UtilityTool uTool = new UtilityTool();
 
 	//KEYHANDLER
-	KeyHandler keyH = new KeyHandler();
+	KeyHandler keyH = new KeyHandler(this);
 	
 	//GAMETREAD
 	public Thread gameThread;
@@ -63,6 +67,12 @@ public class GamePanel extends JPanel implements Runnable {
 	//UI
 	public UI ui = new UI(this);
 	
+	//GAME STATE
+	public int gameState;
+	public final static int PLAY_STATE = 1;
+	public final static int PAUSE_STATE = 2;
+	
+	
 	public GamePanel() {
 		this.setPreferredSize(new Dimension(screenWidth, screenHeight));
 		this.setBackground(Color.black);
@@ -74,6 +84,7 @@ public class GamePanel extends JPanel implements Runnable {
 	public void setupGame() {
 		as.setObject();
 		playMusic();
+		gameState = PLAY_STATE;
 	}
 	
 	private void playMusic() {
@@ -106,6 +117,7 @@ public class GamePanel extends JPanel implements Runnable {
 		
 		long timer = 0;
 		int drawCount =0;
+	
 		
 		while(gameThread != null) {
 			currentTime = System.nanoTime();
@@ -120,6 +132,7 @@ public class GamePanel extends JPanel implements Runnable {
 				repaint();
 				delta = 0.0;
 				drawCount++;
+				FRAMECOUNT++;
 			}
 			
 			if(timer >= 1000000000) {
@@ -133,15 +146,19 @@ public class GamePanel extends JPanel implements Runnable {
 	
 	
 	private void update() {
-		player.update();
+		
+		if(gameState == PLAY_STATE) {
+			player.update();
+		}
+		if(gameState == PAUSE_STATE) {
+			
+		}
 	}
 	
 	public void paintComponent(Graphics g) {
 
 		super.paintComponent(g);
 		Graphics2D g2 = (Graphics2D) g;
-
-		long startDraw = System.nanoTime();
 
 		// Tile
 		tileM.draw(g2);
@@ -156,9 +173,7 @@ public class GamePanel extends JPanel implements Runnable {
 		player.draw(g2);
 
 		// UI
-		ui.draw(g2, startDraw);
-
-		
+		ui.draw(g2);
 
 		g2.dispose();
 		Toolkit.getDefaultToolkit().sync();
