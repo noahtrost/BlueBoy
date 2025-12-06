@@ -6,6 +6,7 @@ import java.awt.image.BufferedImage;
 import java.util.Random;
 
 import de.noah.main.Config;
+import de.noah.util.CollisionManager;
 
 //Entity CLASS specifies all entity in game like PLAYER, FRIENDLY-NPC, MONSTER-NPC ...
 public class Entity {
@@ -29,6 +30,9 @@ public class Entity {
 	private boolean collisionOn = false;
 	private boolean interactibaleNPC;
 	
+	//COLLISIONMANAGER FOR COLLISION CHECKING
+	protected CollisionManager collisionManager;
+	
 	//RANDON_NUMBER_GENERATOR
 	protected static Random random = new Random();
 	
@@ -48,13 +52,23 @@ public class Entity {
 	//--------------------REAL-METHODS---------------------------------------- 
 	
 	//RETURN DETERMINES X-SCREEN POSTION OF ENTITY. CALCULATED RELATIVE TO PLAYER. 
-	protected int calculatingScreenXPosition(int playerWorldX) {
+	private int calculatingScreenXPosition(int playerWorldX) {
 		return worldX - playerWorldX + Config.PLAYER_SCREEN_X;
 	}
 	
 	//RETURN DETERMINES Y-SCREEN POSTION OF ENTITY. CALCULATED RELATIVE TO PLAYER. 
-	protected int calculatingScreenYPosition(int playerWorldY) {
+	private int calculatingScreenYPosition(int playerWorldY) {
 		return worldY - playerWorldY + Config.PLAYER_SCREEN_Y;
+	}
+	
+	//RETURN DETERMINES X-SCREEN POSTION OF ENTITYSHITBOX. CALCULATED RELATIVE TO PLAYER. 
+	public int calculatingScreenHitBoxXPosition(int playerWorldX) {
+		return worldX + hitBox.x- playerWorldX + Config.PLAYER_SCREEN_X;
+	}
+	
+	//RETURN DETERMINES Y-SCREEN POSTION OF ENTITYSHITBOX. CALCULATED RELATIVE TO PLAYER. 
+	public int calculatingScreenHitBoxYPosition(int playerWorldY) {
+		return worldY + hitBox.x - playerWorldY + Config.PLAYER_SCREEN_Y;
 	}
 	
 	//UPDATE SPRITES
@@ -91,12 +105,13 @@ public class Entity {
 	
 	//UPDATES THE ENTITYS VALUES
 	public void update() {
+		setCollisionOn(false);
+		collisionManager.checkCollision(this);
 		setAction();
 		if(!isCollisionOn()) {
 			move();
 		}
 		setFrameSprite();
-		setCollisionOn(false);
 	}
 	
 	//DRAW METHOD - DRAWS CURRENT SPRITE WHEN ENTIYS COORDS ARE IN SCREEN
@@ -104,7 +119,7 @@ public class Entity {
 		
 		//CALC SCREEN-COORDS
 		int screenX = calculatingScreenXPosition(playerWorldX);
-		int screenY = calculatingScreenXPosition(playerWorldY);
+		int screenY = calculatingScreenYPosition(playerWorldY);
 
 		// CHECK IF COORDS IN SCREEN
 		if (!(screenX - Config.TILE_SIZE >= 0 && screenX <= Config.SCREEN_WIDTH  + Config.TILE_SIZE)) return;
@@ -236,5 +251,11 @@ public class Entity {
 
 	public boolean isInteractibaleNPC() {
 		return interactibaleNPC;
+	}
+
+
+
+	public void setCollisionManager(CollisionManager collisionManager) {
+		this.collisionManager = collisionManager;
 	}
 }

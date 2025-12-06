@@ -1,5 +1,6 @@
 package de.noah.tile;
 
+import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 import java.io.BufferedReader;
@@ -102,6 +103,10 @@ public class TileManager {
 
 				BufferedImage image = tile[mapTileNum[col][row]].getSprite();
 				g2.drawImage(image, screenX, screenY, Config.TILE_SIZE, Config.TILE_SIZE, null);
+				
+				//DEBUG ONLY
+				g2.setColor(Color.yellow);
+				g2.drawRect(screenX, screenY, Config.TILE_SIZE, Config.TILE_SIZE);
 			}
 
 		}

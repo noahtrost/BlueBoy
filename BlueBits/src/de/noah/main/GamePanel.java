@@ -44,13 +44,13 @@ public class GamePanel extends JPanel implements Runnable {
 	private final TileManager tileManager = new TileManager();
 
 	// CollisionChecker
-	private final CollisionManager collisionManager = new CollisionManager();
+	private CollisionManager collisionManager;
 
 	// OBJECTS
-	private final SuperObject obj[] = new SuperObject[10];
+	private final SuperObject objects[] = new SuperObject[10];
 
 	// NPCS
-	private final Entity npc[] = new Entity[10];
+	private final Entity npcs[] = new Entity[10];
 
 	// AssetSetter
 	private AssetSetter assetSetter = new AssetSetter();
@@ -79,10 +79,22 @@ public class GamePanel extends JPanel implements Runnable {
 		spriteManager.setUp();
 		tileManager.setUp(spriteManager.getTileSprites());
 		player = new Player(Config.TILE_SIZE * 23, Config.TILE_SIZE * 21, 4, spriteManager.getPlayerSprites());
-		assetSetter.setObjects(obj, spriteManager.getObjectSprites());
-		assetSetter.setNPCS(npc, spriteManager.getAllNPCsprites());
+		assetSetter.setObjects(objects, spriteManager.getObjectSprites());
+		assetSetter.setNPCS(npcs, spriteManager.getAllNPCsprites());
+		collisionManager = new CollisionManager(player, npcs, objects, tileManager.getMapTileNum(),
+				tileManager.getTile());
+		setCollisionManagerToAllEntitys();
+
 		playMusic();
 		gameState = PLAY_STATE;
+	}
+
+	private void setCollisionManagerToAllEntitys() {
+		player.setCollisionManager(collisionManager);
+		for (Entity entity : npcs) {
+			if(entity == null) continue;
+			entity.setCollisionManager(collisionManager);
+		}
 	}
 
 	private void playMusic() {
@@ -145,26 +157,13 @@ public class GamePanel extends JPanel implements Runnable {
 			// PLAYERINPUTS
 			setPlayerInputs();
 
-			// COLLISIONCHECKING - PLAYER
-			collisionManager.checkTile(player, tileManager.getMapTileNum(), tileManager.getTile());
-			collisionManager.checkEntities(player, npc);
-			collisionManager.checkObject(player, obj);
-
-			// COLLISIONCHECKING - NPCS
-			for (Entity npc : npc) {
-				if (npc == null) continue;
-				collisionManager.checkTile(npc, tileManager.getMapTileNum(), tileManager.getTile());
-				collisionManager.checkEntities(npc, this.npc);
-				collisionManager.checkObject(npc, obj);
-			}
-
 			// UPDATE PLAYER
 			player.update();
 
 			// UPDATE NPCS
-			for (int i = 0; i < npc.length; i++) {
-				if (npc[i] != null) {
-					npc[i].update();
+			for (int i = 0; i < npcs.length; i++) {
+				if (npcs[i] != null) {
+					npcs[i].update();
 				}
 			}
 		}
@@ -190,22 +189,26 @@ public class GamePanel extends JPanel implements Runnable {
 		tileManager.draw(g2, player.getWorldX(), player.getWorldY());
 
 		// Object
-		for (int i = 0; i < obj.length; i++) {
-			if (obj[i] != null) {
-				obj[i].draw(g2, player.getWorldX(), player.getWorldY());
+		for (int i = 0; i < objects.length; i++) {
+			if (objects[i] != null) {
+				objects[i].draw(g2, player.getWorldX(), player.getWorldY());
 			}
 		}
 
 		// NPC
-		for (int i = 0; i < npc.length; i++) {
-			if (npc[i] != null) {
-				npc[i].draw(g2, player.getWorldX(), player.getWorldY());
+		for (int i = 0; i < npcs.length; i++) {
+			if (npcs[i] != null) {
+				npcs[i].draw(g2, player.getWorldX(), player.getWorldY());
 			}
 		}
 
 		// Player
 		player.draw(g2);
 
+		// DEBUG ONLY HITBOXES
+		collisionManager.drawHitBox(g2, player);
+		collisionManager.drawHitBox(g2, npcs[0]);
+		
 		// UI
 		ui.draw(g2);
 

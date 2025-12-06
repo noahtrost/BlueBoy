@@ -6,6 +6,7 @@ import java.awt.image.BufferedImage;
 
 import de.noah.main.Config;
 
+
 //PLAYER CLASS
 public class Player extends Entity {
 
@@ -26,10 +27,9 @@ public class Player extends Entity {
 
 	public Player(int worldX, int worldY, int speed, BufferedImage[] sprites) {
 		super(Config.TILE_SIZE*23, Config.TILE_SIZE*21, speed, sprites, false);
-		Rectangle playerHitBox = new Rectangle(8,16,16,32);
+		Rectangle playerHitBox = new Rectangle(8,16,32,32);
 		setHitBox(playerHitBox);
 		this.interactionHitBox = new Rectangle(-Config.TILE_SIZE, -Config.TILE_SIZE, Config.TILE_SIZE*3, Config.TILE_SIZE*3);
-		
 	}
 
 	
@@ -69,20 +69,12 @@ public class Player extends Entity {
 
 	//UPDATING PLAYER VALUES
 	public void update() {
-		
+		setCollisionOn(false);
 		if (movementOccured()) {
 			setDirection();
 
-			// CHECK TILE COLLISION
-			//gp.cc.checkTile(this);
-
-			// CHECK OBJECT COLLISION
-			//int objIndex = gp.cc.checkObject(this, true);
-			//objectCollisionHandler(objIndex);
-
-			// CHECK NPC COLLISION
-			//gp.cc.checkEntities(this);
-
+			collisionManager.checkCollision(this);
+			
 			if (isCollisionOn() == false) {
 				move();
 			}
@@ -90,11 +82,7 @@ public class Player extends Entity {
 			}
 		
 		resetPlayerInputs();
-		setCollisionOn(false);
 		}
-
-		// CHECK NPC INTERACTION
-		//handleNPC(gp.cc.checkInteractibleEntities(this));
 		
 
 	//DRAWS PLAYER

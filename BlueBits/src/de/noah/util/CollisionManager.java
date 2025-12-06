@@ -1,24 +1,36 @@
 package de.noah.util;
 
+import java.awt.Color;
+import java.awt.Graphics2D;
+
 import de.noah.entity.Entity;
 import de.noah.entity.Player;
 import de.noah.main.Config;
 import de.noah.object.SuperObject;
 import de.noah.tile.Tile;
 
-
 //CLASS FOR COLLISIONCHECKING
 public class CollisionManager {
 
+	private Player player;
+	private Entity [] npcs;
+	private SuperObject[] objects;
+	private int[][] mapTileNum;
+	private Tile [] tile;
+	
 //-----------------------CONSTRCTOR---------------------------------------- 
-	public CollisionManager() {}
+	public CollisionManager(Player player, Entity [] npcs, SuperObject[] objects, int[][] mapTileNum, Tile [] tile) {
+		this.player = player;
+		this.npcs = npcs;
+		this.objects = objects;
+		this.mapTileNum = mapTileNum;
+		this.tile = tile;
+	}
 
-	
-	
 //-----------------------REAL-METHODS---------------------------------------
 
-	//CHECKING COLLISION OF ENTITYS WITHS TILES - RETURN TRUE WHEN COLLISION OCCURS
-	public boolean checkTile(Entity entity, int [] [] mapTileNum, Tile [] tile) {
+	// CHECKING COLLISION OF ENTITYS WITHS TILES - RETURN TRUE WHEN COLLISION OCCURS
+	public boolean checkTile(Entity entity) {
 
 		int entityLeftWorldX = entity.getWorldX() + entity.getHitBox().x;
 		int entityRightWorldX = entity.getWorldX() + entity.getHitBox().x + entity.getHitBox().width;
@@ -50,15 +62,15 @@ public class CollisionManager {
 			}
 			break;
 		case "left":
-			entityLeftCol = (entityLeftWorldX - entity.getSpeed()) /  Config.TILE_SIZE;
+			entityLeftCol = (entityLeftWorldX - entity.getSpeed()) / Config.TILE_SIZE;
 			tileNum1 = mapTileNum[entityLeftCol][entityTopRow];
 			tileNum2 = mapTileNum[entityLeftCol][entityBottomRow];
-			if (tile[tileNum1].isCollision() ||tile[tileNum2].isCollision()) {
+			if (tile[tileNum1].isCollision() || tile[tileNum2].isCollision()) {
 				entity.setCollisionOn(true);
 			}
 			break;
 		case "right":
-			entityRightCol = (entityRightWorldX + entity.getSpeed()) /  Config.TILE_SIZE;
+			entityRightCol = (entityRightWorldX + entity.getSpeed()) / Config.TILE_SIZE;
 			tileNum1 = mapTileNum[entityRightCol][entityTopRow];
 			tileNum2 = mapTileNum[entityRightCol][entityBottomRow];
 			if (tile[tileNum1].isCollision() || tile[tileNum2].isCollision()) {
@@ -69,18 +81,19 @@ public class CollisionManager {
 		return entity.isCollisionOn();
 	}
 
-	//CHECKING COLLISION OF ENTITYS WITH OBJECTS - RETURNS INDEX OF OBJECTS WHICH ENTITY COLLIDIDED WITH
-	public int checkObject(Entity entity, SuperObject[] obj) {
+	// CHECKING COLLISION OF ENTITYS WITH OBJECTS - RETURNS INDEX OF OBJECTS WHICH
+	// ENTITY COLLIDIDED WITH
+	public int checkObject(Entity entity) {
 
 		int index = -1;
 
-		for (int i = 0; i < obj.length; i++) {
+		for (int i = 0; i < objects.length; i++) {
 
-			if (obj[i] == null)
+			if (objects[i] == null)
 				continue;
-			if (intersects(entity, obj[i])) {
+			if (intersects(entity, objects[i])) {
 
-				if (obj[i].isCollision())
+				if (objects[i].isCollision())
 					entity.setCollisionOn(true);
 				index = i;
 			}
@@ -88,40 +101,52 @@ public class CollisionManager {
 		return index;
 	}
 
-	//CHECKING COLLISION OF ENTITYS WITHS OTHER ENTITIES - RETURNS INDEX OF NPCS WHICH INVOKING ENTITY COLLIDIDED WITH
-	public int checkEntities(Entity entity , Entity [] npc) {
-		
+	// CHECKING COLLISION OF ENTITYS WITHS OTHER ENTITIES - RETURNS INDEX OF NPCS
+	// WHICH INVOKING ENTITY COLLIDIDED WITH
+	public int checkEntities(Entity entity) {
+
 		int index = -1;
 
-		for (int i = 0; i < npc.length; i++) {
+		for (int i = 0; i < npcs.length; i++) {
 
-			if (npc[i] == null || entity == npc[i] ) continue;
-			if (intersects(entity, npc[i])) {
+			if (npcs[i] == null || entity == npcs[i])
+				continue;
+			if (intersects(entity, npcs[i])) {
 				entity.setCollisionOn(true);
-					index = i;
+				index = i;
 			}
 		}
 		return index;
 	}
-	
-	//CHECKING COLLLISION OF NPCS WITH THE PLAYERS INTERACTION HITBOX - RETURNS INDEX OF NPC WHICH INVOKED COLLISION
-	public int checkInteractibleEntities(Player player,  Entity [] npc) {
-		
+
+	// CHECKING COLLISION OF ENTITY with PLAYER
+	public void checkPlayer(Entity entity) {
+
+		if (intersects(entity, player)) {
+			entity.setCollisionOn(true);
+		}
+	}
+
+	// CHECKING COLLLISION OF NPCS WITH THE PLAYERS INTERACTION HITBOX - RETURNS
+	// INDEX OF NPC WHICH INVOKED COLLISION
+	public int checkInteractibleEntities(Player player) {
+
 		int index = -1;
 
-		for (int i = 0; i < npc.length; i++) {
-			if (npc[i] == null) continue;
-			
-			if (intersects(player, npc[i])) {
-				if (npc[i].isInteractibaleNPC()) {
-					index =  i;
+		for (int i = 0; i < npcs.length; i++) {
+			if (npcs[i] == null)
+				continue;
+
+			if (intersects(player, npcs[i])) {
+				if (npcs[i].isInteractibaleNPC()) {
+					index = i;
 				}
 			}
 		}
 		return index;
 	}
 
-	//CHECKS IF HTIBOX OVERLAP VIA AABB CHECK - FOR OBJECTS
+	// CHECKS IF HTIBOX OVERLAP VIA AABB CHECK - FOR OBJECTS
 	private boolean intersects(Entity entity, SuperObject object) {
 		// DETERMINE POS ENTITY
 		int left = entity.getWorldX() + entity.getHitBox().x;
@@ -133,7 +158,8 @@ public class CollisionManager {
 		int oLeft = object.getWorldX() + object.getHitBox().x;
 		int oRight = object.getWorldX() + object.getHitBox().x + object.getHitBox().width;
 		int oTop = object.getWorldY() + object.getHitBox().y;
-		int oBottom = object.getWorldY() + object.getHitBox().y + object.getHitBox().height;
+		int oBottom = object.getWorldY() + object.getHitBox().y + object.getHitBox().height;
+
 		// calculate players next position
 		switch (entity.getDirection()) {
 		case "up":
@@ -153,8 +179,8 @@ public class CollisionManager {
 		// check intersection (Hard Intersection)
 		return (!(left > oRight || right < oLeft || top > oBottom || bottom < oTop));
 	}
-	
-	//METHOD WHICH CHECK IF HTIBOX OVERLAP VIA AABB CHECK - FOR 2 ENTITYS
+
+	// METHOD WHICH CHECK IF HTIBOX OVERLAP VIA AABB CHECK - FOR 2 ENTITYS
 	private boolean intersects(Entity entity, Entity entity2) {
 		// DETERMINE POS ENTITY
 		int left = entity.getWorldX() + entity.getHitBox().x;
@@ -187,8 +213,9 @@ public class CollisionManager {
 		// check intersection (Hard Intersection)
 		return (!(left > right2 || right < left2 || top > bottom2 || bottom < top2));
 	}
-	
-	//METHOD WHICH CHECK IF HTIBOX OVERLAP VIA AABB CHECK - FOR PLAYER AND ENTITY (ONLY FOR INTERACTION)
+
+	// METHOD WHICH CHECK IF HTIBOX OVERLAP VIA AABB CHECK - FOR PLAYER AND ENTITY
+	// (ONLY FOR INTERACTION)
 	public boolean intersects(Player player, Entity entity) {
 		// DETERMINTE POS PLAYER
 		int left = player.getWorldX() + player.getInteractionHitBox().x;
@@ -203,7 +230,30 @@ public class CollisionManager {
 		int bottom2 = entity.getWorldY() + entity.getHitBox().y + entity.getHitBox().height;
 
 		// check intersection
-		return (!(left > right2 || right < left2 || top > bottom2|| bottom < top2));
+		return (!(left > right2 || right < left2 || top > bottom2 || bottom < top2));
 	}
-
+	
+	public void checkCollision(Player player) {
+		checkTile(player);
+		checkEntities(player);
+		checkObject(player);
+	}
+	
+	public void checkCollision(Entity entity) {
+		checkTile(entity);
+		checkEntities(entity);
+		checkObject(entity);
+		checkPlayer(entity);
+	}
+	
+	public void drawHitBox(Graphics2D g2, Entity entity) {
+		g2.setColor(Color.red);
+		g2.drawRect(entity.calculatingScreenHitBoxXPosition(player.getWorldX()), entity.calculatingScreenHitBoxYPosition(player.getWorldY()), entity.getHitBox().width, entity.getHitBox().height);
+	}
+	
+	public void drawHitBox(Graphics2D g2, Player player) {
+		g2.setColor(Color.red);
+		g2.drawRect(Config.PLAYER_SCREEN_X + player.getHitBox().x, Config.PLAYER_SCREEN_Y + player.getHitBox().y, player.getHitBox().width, player.getHitBox().height);
+	}
+	
 }
