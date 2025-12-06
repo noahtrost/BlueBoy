@@ -1,4 +1,4 @@
-package main;
+package de.noah.util;
 
 import java.net.URL;
 
@@ -6,11 +6,15 @@ import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.Clip;
 
-public class SoundManager {
 
+//CLASS MANAGES ALL SOUNDS
+public class SoundManager {
+	
+//-----------------------ATTRIBUTES-------------------------
 	Clip clip;
 	URL[] soundURL = new URL[30];
-
+	
+//-----------------------CONSTRUCTOR-------------------------
 	public SoundManager() {
 		soundURL[0] = getClass().getResource("/sound/BlueBoyAdventure.wav");
 		soundURL[1] = getClass().getResource("/sound/blocked.wav");
@@ -20,6 +24,10 @@ public class SoundManager {
 		soundURL[5] = getClass().getResource("/sound/unlock.wav");
 	}
 
+	
+//-----------------------REAL-METHODS-------------------------
+	
+	//SETTING SOUND VIA INDEX AND SAVES URLS
 	public void setSound(int index) {
 		try {
 			AudioInputStream ais = AudioSystem.getAudioInputStream(soundURL[index]);
@@ -31,14 +39,17 @@ public class SoundManager {
 		}
 	}
 
+	//PLAYS SOUND WHICH WAS SET IN CLIP{
 	public void play() {
 		clip.start();
 	}
 
+	//LOOPS SOUND WHICH WAS SET IN CLIP
 	public void loop() {
 		clip.loop(Clip.LOOP_CONTINUOUSLY);
 	}
 
+	//STOPS SOUND WHICH WAS SET IN CLIP
 	public void stop() {
 		clip.stop();
 	}
