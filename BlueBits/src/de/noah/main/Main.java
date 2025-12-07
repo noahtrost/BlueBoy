@@ -7,7 +7,7 @@ public class Main {
 	
 	public static void main(String [] args) {
 		
-		//CREATING WINDOWS
+		//CREATING WINDOW
 		JFrame window = new JFrame();
 		window.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		window.setResizable(true);
@@ -24,6 +24,6 @@ public class Main {
 
 		//MAKE WINDOW VISIBLE AFTER EVERTHING IS SETUP  - DRAWING STARTS NOW
 		window.setLocationRelativeTo(null);
-		window.setVisible(true);
+		window.setVisible(true); 
 	}
 }
