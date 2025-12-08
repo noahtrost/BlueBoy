@@ -15,7 +15,7 @@ public class SpriteManager {
 	private BufferedImage[] tileSprites;
 	@SuppressWarnings("unused")
 	private BufferedImage[] objectSprites;
-	@SuppressWarnings("unused")
+
 	private BufferedImage[] uiSprites;
 	
 	private BufferedImage [][] allNPCsprites;
@@ -34,12 +34,14 @@ public class SpriteManager {
 		tileSprites = new BufferedImage[42];
 		objectSprites = new BufferedImage[5];
 		allNPCsprites = new BufferedImage[1][8];
+		uiSprites = new BufferedImage[1];
 		
 		// LOAD SPRITES INTO ARRAY
 		loadPlayerSprites();
 		loadOldManSprites();
 		loadTileSprites();
 		loadObjectSprite();
+		loadUISprite(); 
 		
 		allNPCsprites[0] = oldManSprites;
 
@@ -48,6 +50,7 @@ public class SpriteManager {
 		scalingSprites(oldManSprites, Config.TILE_SIZE, Config.TILE_SIZE);
 		scalingSprites(tileSprites, Config.TILE_SIZE, Config.TILE_SIZE);
 		scalingSprites(objectSprites, Config.TILE_SIZE, Config.TILE_SIZE);
+		scalingSprites(uiSprites, 32, 32);
 		
 	}
 
@@ -172,6 +175,17 @@ public class SpriteManager {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+	}
+	
+	//LOAD UI SPRITES
+	private void loadUISprite() {
+			try {
+				// OBJECT-SPRITES
+				uiSprites[0] = ImageIO.read(getClass().getResource("/objects/talk.png"));
+				
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
 	}
 	
 	//SCALES EVERY IMAGE IN GIVEN SPRITE ARRAY

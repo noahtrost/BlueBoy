@@ -12,6 +12,8 @@ import de.noah.tile.Tile;
 //CLASS FOR COLLISIONCHECKING
 public class CollisionManager {
 
+
+	// --------------------ATTIBUTES---------------------------------------
 	private Player player;
 	private Entity[] npcs;
 	private SuperObject[] objects;
@@ -82,7 +84,7 @@ public class CollisionManager {
 
 	// CHECKING COLLISION OF ENTITYS WITH OBJECTS - RETURNS INDEX OF OBJECTS WHICH
 	// ENTITY COLLIDIDED WITH
-	public int checkObject(Entity entity) {
+	private int checkObject(Entity entity) {
 
 		int index = -1;
 
@@ -102,7 +104,7 @@ public class CollisionManager {
 
 	// CHECKING COLLISION OF ENTITYS WITHS OTHER ENTITIES - RETURNS INDEX OF NPCS
 	// WHICH INVOKING ENTITY COLLIDIDED WITH
-	public int checkEntities(Entity entity) {
+	private int checkEntities(Entity entity) {
 
 		int index = -1;
 
@@ -118,17 +120,19 @@ public class CollisionManager {
 		return index;
 	}
 
-	// CHECKING COLLISION OF ENTITY with PLAYER
-	public void checkPlayer(Entity entity) {
+	// CHECKING COLLISION OF ENTITY WITH PLAYER
+	private boolean checkPlayer(Entity entity) {
 
 		if (intersects(entity, player)) {
 			entity.setCollisionOn(true);
+			return true;
 		}
+		return false;
 	}
 
 	// CHECKING COLLLISION OF NPCS WITH THE PLAYERS INTERACTION HITBOX - RETURNS
 	// INDEX OF NPC WHICH INVOKED COLLISION
-	public int checkInteractibleEntities(Player player) {
+	private int checkInteractibleEntities(Player player) {
 
 		int index = -1;
 
@@ -240,13 +244,14 @@ public class CollisionManager {
 		checkTile(player);
 		checkEntities(player);
 		checkObject(player);
+		player.setinteractiableNPC(checkInteractibleEntities(player));
 	}
 
 	public void checkCollision(Entity entity) {
 		checkTile(entity);
 		checkEntities(entity);
 		checkObject(entity);
-		checkPlayer(entity);
+		entity.setPlayerCollision(checkPlayer(entity));
 	}
 
 	public void drawHitBox(Graphics2D g2, Entity entity) {
@@ -260,6 +265,12 @@ public class CollisionManager {
 		g2.setColor(Color.red);
 		g2.drawRect(Config.PLAYER_SCREEN_X + player.getHitBox().x, Config.PLAYER_SCREEN_Y + player.getHitBox().y,
 				player.getHitBox().width, player.getHitBox().height);
+	}
+	
+	public void drawInteractionHitBox(Graphics2D g2, Player player) {
+		g2.setColor(Color.red);
+		g2.drawRect(Config.PLAYER_SCREEN_X + player.getInteractionHitBox().x, Config.PLAYER_SCREEN_Y + player.getInteractionHitBox().y,
+				player.getInteractionHitBox().width, player.getInteractionHitBox().height);
 	}
 
 }

@@ -14,6 +14,7 @@ import de.noah.tile.TileManager;
 import de.noah.userinterface.UI;
 import de.noah.util.AssetSetter;
 import de.noah.util.CollisionManager;
+import de.noah.util.GameStateManager;
 import de.noah.util.InputManager;
 import de.noah.util.SoundManager;
 import de.noah.util.SpriteManager;
@@ -32,9 +33,6 @@ public class GamePanel extends JPanel implements Runnable {
 
 	// INPUTMANAGER
 	private final InputManager inputManager = new InputManager();
-
-	// UI
-	private final UI ui = new UI();
 
 	// PLAYER
 	private Player player;
@@ -55,11 +53,14 @@ public class GamePanel extends JPanel implements Runnable {
 	private AssetSetter assetSetter = new AssetSetter();
 
 	// SoundManager
-	public SoundManager soundManager = new SoundManager();
-	public SoundManager soundEffectManager = new SoundManager();
+	private SoundManager soundManager = new SoundManager();
+	private SoundManager soundEffectManager = new SoundManager();
 
-	// GAME STATE
-	public GameState gameState;
+	// GAME STATE MANAGER
+	private GameStateManager gameStateManager = new GameStateManager();
+
+	// UI
+	private UI ui;
 
 	// -=------------------------------------CONSTRUCTOR-----------------------------
 
@@ -80,15 +81,16 @@ public class GamePanel extends JPanel implements Runnable {
 		collisionManager = new CollisionManager(player, npcs, objects, tileManager.getMapTileNum(),
 				tileManager.getTile());
 		setCollisionManagerToAllEntitys();
-
+		ui = new UI(gameStateManager, spriteManager.getUiSprites());
+		gameStateManager.setGameState(GameState.PLAYSTATE);
 		playMusic();
-		gameState = GameState.PLAYSTATE;
 	}
 
 	private void setCollisionManagerToAllEntitys() {
 		player.setCollisionManager(collisionManager);
 		for (Entity entity : npcs) {
-			if(entity == null) continue;
+			if (entity == null)
+				continue;
 			entity.setCollisionManager(collisionManager);
 		}
 	}
@@ -148,19 +150,74 @@ public class GamePanel extends JPanel implements Runnable {
 	}
 
 	private void update() {
-		if (gameState == GameState.PLAYSTATE) {
+		// PLAYERINPUTS
+		setPlayerInputs();
 
-			// PLAYERINPUTS
-			setPlayerInputs();
+		// PLATSTATE
+		if (gameStateManager.getGameState() == GameState.PLAYSTATE)
+			updatePlayState();
+		else if (gameStateManager.getGameState() == GameState.DIALOGSTATE)
+			updateDialogState();
 
-			// UPDATE PLAYER
-			player.update();
+		// SET GAME STATE FOR NEW FRAME
+		setNextGameState();
+		inputManager.setSpaceJustPressed(false);
+	}
 
-			// UPDATE NPCS
-			for (int i = 0; i < npcs.length; i++) {
-				if (npcs[i] != null) {
-					npcs[i].update();
-				}
+	private void updateDialogState() {
+		makeEyeContact();
+	}
+
+	private void makeEyeContact() {
+		int npcIndex = player.getinteractiableNPC();
+
+		int xDiff = Math.abs(player.getWorldX() - npcs[npcIndex].getWorldX());
+		int yDiff = Math.abs(player.getWorldY() - npcs[npcIndex].getWorldY());
+
+		if (xDiff >= yDiff) {
+			if (player.getWorldX() <= npcs[npcIndex].getWorldX()) {
+				player.setDialogFacing(6);
+				npcs[npcIndex].setDialogFacing(4);
+			} else {
+				player.setDialogFacing(4);
+				npcs[npcIndex].setDialogFacing(6);
+			}
+		} else {
+			if (player.getWorldY() <= npcs[npcIndex].getWorldY()) {
+				player.setDialogFacing(2);
+				npcs[npcIndex].setDialogFacing(0);
+			} else {
+				player.setDialogFacing(0);
+				npcs[npcIndex].setDialogFacing(2);
+			}
+		}
+	}
+
+	private void setNextGameState() {
+		
+		//PLAYSTATE -> DIALOGSTATE
+		if(gameStateManager.getGameState() == GameState.PLAYSTATE) {
+			if (player.getinteractiableNPC() != -1 && inputManager.isSpaceJustPressed()) {
+				gameStateManager.setGameState(GameState.DIALOGSTATE);
+			}
+		}
+		//DIALOG -> PLAYSTATE
+		else if(gameStateManager.getGameState() == GameState.DIALOGSTATE) {
+			if (inputManager.isSpaceJustPressed()) {
+				gameStateManager.setGameState(GameState.PLAYSTATE);
+			}
+		}
+		
+	}
+
+	private void updatePlayState() {
+		// UPDATE PLAYER
+		player.update();
+
+		// UPDATE NPCS
+		for (int i = 0; i < npcs.length; i++) {
+			if (npcs[i] != null) {
+				npcs[i].update();
 			}
 		}
 	}
@@ -168,17 +225,18 @@ public class GamePanel extends JPanel implements Runnable {
 	private void setPlayerInputs() {
 		if (inputManager.isUp()) {
 			player.setUp(true);
-		} 
+		}
 		if (inputManager.isDown()) {
 			player.setDown(true);
 		}
 		if (inputManager.isLeft()) {
 			player.setLeft(true);
-		} 
+		}
 		if (inputManager.isRight()) {
 			player.setRight(true);
 		}
 	}
+	
 
 	public void paintComponent(Graphics g) {
 
@@ -206,10 +264,11 @@ public class GamePanel extends JPanel implements Runnable {
 
 //		// DEBUG ONLY HITBOXES
 //		collisionManager.drawHitBox(g2, player);
+//		collisionManager.drawInteractionHitBox(g2, player);
 //		collisionManager.drawHitBox(g2, npcs[0]);
-		
+
 		// UI
-		ui.draw(g2);
+		ui.draw(g2, player.getinteractiableNPC());
 
 		g2.dispose();
 	}

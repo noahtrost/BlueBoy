@@ -21,6 +21,7 @@ public class Player extends Entity {
 
 	//HITBOX FOR INTERACTIONS WITH NPCS
 	private Rectangle interactionHitBox;
+	private int interactiableNPC = -1;
 
 	
 	// --------------------CONSTRUCTOR---------------------------------------
@@ -87,11 +88,10 @@ public class Player extends Entity {
 	//UPDATING PLAYER VALUES
 	public void update() {
 		setCollisionOn(false);
+		
 		if (movementOccured()) {
 			setDirection();
-
 			collisionManager.checkCollision(this);
-			
 			if (isCollisionOn() == false) {
 				move();
 			}
@@ -105,41 +105,47 @@ public class Player extends Entity {
 	//DRAWS PLAYER
 	public void draw(Graphics2D g2) {
 		BufferedImage image = null;
-
-		if(getDirection().contains("up")) {
-			if (getSpriteNum() == 1) {
-				image = getSprites()[0];
-			}
-			if (getSpriteNum() == 2) {
-				image = getSprites()[1];
-			}
+		
+		if(getDialogFacing() != -1) {
+			image = getSprites()[getDialogFacing()];
 		}
-		else if(getDirection().contains("down")) {
-			if (getSpriteNum() == 1) {
-				image = getSprites()[2];
+		else {
+			if(getDirection().contains("up")) {
+				if (getSpriteNum() == 1) {
+					image = getSprites()[0];
+				}
+				if (getSpriteNum() == 2) {
+					image = getSprites()[1];
+				}
 			}
-			if (getSpriteNum() == 2) {
-				image = getSprites()[3];
+			else if(getDirection().contains("down")) {
+				if (getSpriteNum() == 1) {
+					image = getSprites()[2];
+				}
+				if (getSpriteNum() == 2) {
+					image = getSprites()[3];
+				}
 			}
-		}
-		else if(getDirection().contains("left")) {
-			if (getSpriteNum() == 1) {
-				image = getSprites()[4];
+			else if(getDirection().contains("left")) {
+				if (getSpriteNum() == 1) {
+					image = getSprites()[4];
+				}
+				if (getSpriteNum() == 2) {
+					image = getSprites()[5];
+				}
 			}
-			if (getSpriteNum() == 2) {
-				image = getSprites()[5];
-			}
-		}
-		else if(getDirection().contains("right")) { 
-			if (getSpriteNum() == 1) {
-				image = getSprites()[6];
-			}
-			if (getSpriteNum() == 2) {
-				image = getSprites()[7];
+			else if(getDirection().contains("right")) { 
+				if (getSpriteNum() == 1) {
+					image = getSprites()[6];
+				}
+				if (getSpriteNum() == 2) {
+					image = getSprites()[7];
+				}
 			}
 		}
 
 		g2.drawImage(image, Config.PLAYER_SCREEN_X,Config.PLAYER_SCREEN_Y, Config.TILE_SIZE, Config.TILE_SIZE, null);
+		setDialogFacing(-1);
 	}
 	
 	
@@ -197,5 +203,20 @@ public class Player extends Entity {
 	// GETTERS AND SETTERS
 	public Rectangle getInteractionHitBox() {
 		return interactionHitBox;
+	}
+
+
+	public int isInteractionPossible() {
+		return getinteractiableNPC();
+	}
+
+
+	public int getinteractiableNPC() {
+		return interactiableNPC;
+	}
+
+
+	public void setinteractiableNPC(int interactiableNPC) {
+		this.interactiableNPC = interactiableNPC;
 	}
 }

@@ -45,7 +45,12 @@ public class NPC_OldMan extends Entity {
 	//SPECIFIC ACTION FOR OLDMAN ENTITY
 	public void setAction() {
 		
-		if(directionSwitchCounter > DIRECTION_LIMIT || isCollisionOn()) setDirection();
+		if(isPlayerCollision()) {
+			setDirection(getDirection());
+			setSpriteNum(1);
+		}
+		
+		else if(directionSwitchCounter > DIRECTION_LIMIT || isCollisionOn()) setDirection();
 		directionSwitchCounter++;
 		
 	}		

@@ -32,6 +32,8 @@ public class Entity {
 	
 	//COLLISIONMANAGER FOR COLLISION CHECKING
 	protected CollisionManager collisionManager;
+	private boolean playerCollision = false;
+	private int dialogFacing = -1;
 	
 	//RANDON_NUMBER_GENERATOR
 	protected static Random random = new Random();
@@ -53,6 +55,7 @@ public class Entity {
 	
 	//UPDATE SPRITES
 	protected void setFrameSprite() {
+		if(playerCollision) return;
 		spriteCounter++;
 		if (spriteCounter > 12) {
 			if (spriteNum == 1) {
@@ -129,42 +132,48 @@ public class Entity {
 		//GET THE RIGHT SPRITE
 		BufferedImage sprite = null;
 
-		switch (direction) {
-		case "up":
-			if (spriteNum == 1) {
-				sprite = sprites[0];
+		if(dialogFacing != -1) {
+			sprite = sprites[dialogFacing];
+		}
+		else {
+			switch (direction) {
+			case "up":
+				if (spriteNum == 1) {
+					sprite = sprites[0];
+				}
+				if (spriteNum == 2) {
+					sprite = sprites[1];
+				}
+				break;
+			case "down":
+				if (spriteNum == 1) {
+					sprite = sprites[2];
+				}
+				if (spriteNum == 2) {
+					sprite = sprites[3];
+				}
+				break;
+			case "left":
+				if (spriteNum == 1) {
+					sprite = sprites[4];
+				}
+				if (spriteNum == 2) {
+					sprite = sprites[5];
+				}
+				break;
+			case "right":
+				if (spriteNum == 1) {
+					sprite = sprites[6];
+				}if (spriteNum == 2) {
+					sprite = sprites[7];
+				}
+				break;
 			}
-			if (spriteNum == 2) {
-				sprite = sprites[1];
-			}
-			break;
-		case "down":
-			if (spriteNum == 1) {
-				sprite = sprites[2];
-			}
-			if (spriteNum == 2) {
-				sprite = sprites[3];
-			}
-			break;
-		case "left":
-			if (spriteNum == 1) {
-				sprite = sprites[4];
-			}
-			if (spriteNum == 2) {
-				sprite = sprites[5];
-			}
-			break;
-		case "right":
-			if (spriteNum == 1) {
-				sprite = sprites[6];
-			}if (spriteNum == 2) {
-				sprite = sprites[7];
-			}
-			break;
 		}
 		
 		//DRAW SPRITE
 		g2.drawImage(sprite, screenX, screenY, Config.TILE_SIZE, Config.TILE_SIZE, null);
+		dialogFacing = -1;
 	}
 
 	//--------------------GETTERS/SETTERS---------------------------------------- 
@@ -257,5 +266,29 @@ public class Entity {
 
 	public void setCollisionManager(CollisionManager collisionManager) {
 		this.collisionManager = collisionManager;
+	}
+
+
+
+	public boolean isPlayerCollision() {
+		return playerCollision;
+	}
+
+
+
+	public void setPlayerCollision(boolean playerCollision) {
+		this.playerCollision = playerCollision;
+	}
+
+
+
+	public int getDialogFacing() {
+		return dialogFacing;
+	}
+
+
+
+	public void setDialogFacing(int dialogFacing) {
+		this.dialogFacing = dialogFacing;
 	}
 }

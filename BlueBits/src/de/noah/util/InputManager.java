@@ -9,6 +9,7 @@ public class InputManager implements KeyListener {
 //--------------------ATTRIBUTES-----------------------------
 	private boolean up, down, left, right, space, pause;
 
+	private boolean spaceJustPressed = false;
 //--------------------CONSTRUCTOR----------------------------
 
 	public InputManager() {}
@@ -38,10 +39,11 @@ public class InputManager implements KeyListener {
 			pause = true;
 		}
 
-		if (code == KeyEvent.VK_SPACE) {
+		if (code == KeyEvent.VK_SPACE && !space) {
+			spaceJustPressed = true;
 			space = true;
 		}
-
+		
 	}
 	
 	@Override
@@ -65,6 +67,7 @@ public class InputManager implements KeyListener {
 		}
 		if (code == KeyEvent.VK_SPACE) {
 			space = false;
+			spaceJustPressed = false;
 		}
 	}
 
@@ -115,6 +118,14 @@ public class InputManager implements KeyListener {
 
 	public void setPause(boolean pause) {
 		this.pause = pause;
+	}
+
+	public boolean isSpaceJustPressed() {
+		return spaceJustPressed;
+	}
+
+	public void setSpaceJustPressed(boolean spaceJustPressed) {
+		this.spaceJustPressed = spaceJustPressed;
 	}
 
 }

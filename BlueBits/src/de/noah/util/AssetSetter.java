@@ -24,6 +24,6 @@ public class AssetSetter {
 	
 	//PLACE NPCS HERE
 	public void setNPCS(Entity [] npcs, BufferedImage[][] sprites) {
-				npcs[0] = new NPC_OldMan(Config.TILE_SIZE*21, Config.TILE_SIZE*21, 1, sprites[0], true);
+				npcs[0] = new NPC_OldMan(Config.TILE_SIZE*19, Config.TILE_SIZE*21, 1, sprites[0], true);
 	}
 }
