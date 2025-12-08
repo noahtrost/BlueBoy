@@ -13,13 +13,13 @@ import de.noah.tile.Tile;
 public class CollisionManager {
 
 	private Player player;
-	private Entity [] npcs;
+	private Entity[] npcs;
 	private SuperObject[] objects;
 	private int[][] mapTileNum;
-	private Tile [] tile;
-	
+	private Tile[] tile;
+
 //-----------------------CONSTRCTOR---------------------------------------- 
-	public CollisionManager(Player player, Entity [] npcs, SuperObject[] objects, int[][] mapTileNum, Tile [] tile) {
+	public CollisionManager(Player player, Entity[] npcs, SuperObject[] objects, int[][] mapTileNum, Tile[] tile) {
 		this.player = player;
 		this.npcs = npcs;
 		this.objects = objects;
@@ -33,9 +33,9 @@ public class CollisionManager {
 	public boolean checkTile(Entity entity) {
 
 		int entityLeftWorldX = entity.getWorldX() + entity.getHitBox().x;
-		int entityRightWorldX = entity.getWorldX() + entity.getHitBox().x + entity.getHitBox().width;
+		int entityRightWorldX = entity.getWorldX() + entity.getHitBox().x + entity.getHitBox().width - 1;
 		int entityTopWorldY = entity.getWorldY() + entity.getHitBox().y;
-		int entityBottomWorldY = entity.getWorldY() + entity.getHitBox().y + entity.getHitBox().height;
+		int entityBottomWorldY = entity.getWorldY() + entity.getHitBox().y + entity.getHitBox().height - 1;
 
 		int entityLeftCol = entityLeftWorldX / Config.TILE_SIZE;
 		int entityRightCol = entityRightWorldX / Config.TILE_SIZE;
@@ -44,39 +44,38 @@ public class CollisionManager {
 
 		int tileNum1, tileNum2;
 
-		switch (entity.getDirection()) {
-		case "up":
+		if (entity.getDirection().contains("up")) {
 			entityTopRow = (entityTopWorldY - entity.getSpeed()) / Config.TILE_SIZE;
 			tileNum1 = mapTileNum[entityLeftCol][entityTopRow];
 			tileNum2 = mapTileNum[entityRightCol][entityTopRow];
 			if (tile[tileNum1].isCollision() || tile[tileNum2].isCollision()) {
 				entity.setCollisionOn(true);
 			}
-			break;
-		case "down":
+		}
+		if (entity.getDirection().contains("down")) {
+
 			entityBottomRow = (entityBottomWorldY + entity.getSpeed()) / Config.TILE_SIZE;
 			tileNum1 = mapTileNum[entityLeftCol][entityBottomRow];
 			tileNum2 = mapTileNum[entityRightCol][entityBottomRow];
 			if (tile[tileNum1].isCollision() || tile[tileNum2].isCollision()) {
 				entity.setCollisionOn(true);
 			}
-			break;
-		case "left":
+		}
+		if (entity.getDirection().contains("left")) {
 			entityLeftCol = (entityLeftWorldX - entity.getSpeed()) / Config.TILE_SIZE;
 			tileNum1 = mapTileNum[entityLeftCol][entityTopRow];
 			tileNum2 = mapTileNum[entityLeftCol][entityBottomRow];
 			if (tile[tileNum1].isCollision() || tile[tileNum2].isCollision()) {
 				entity.setCollisionOn(true);
 			}
-			break;
-		case "right":
+		}
+		if (entity.getDirection().contains("right")) {
 			entityRightCol = (entityRightWorldX + entity.getSpeed()) / Config.TILE_SIZE;
 			tileNum1 = mapTileNum[entityRightCol][entityTopRow];
 			tileNum2 = mapTileNum[entityRightCol][entityBottomRow];
 			if (tile[tileNum1].isCollision() || tile[tileNum2].isCollision()) {
 				entity.setCollisionOn(true);
 			}
-			break;
 		}
 		return entity.isCollisionOn();
 	}
@@ -137,7 +136,7 @@ public class CollisionManager {
 			if (npcs[i] == null)
 				continue;
 
-			if (intersects(player, npcs[i])) {
+			if (intersectsInteraction(player, npcs[i])) {
 				if (npcs[i].isInteractibaleNPC()) {
 					index = i;
 				}
@@ -161,19 +160,21 @@ public class CollisionManager {
 		int oBottom = object.getWorldY() + object.getHitBox().y + object.getHitBox().height;
 
 		// calculate players next position
-		switch (entity.getDirection()) {
-		case "up":
+		if (entity.getDirection().contains("up")) {
 			top -= entity.getSpeed();
-			break;
-		case "down":
+			bottom -= entity.getSpeed();
+		}
+		if (entity.getDirection().contains("down")) {
 			bottom += entity.getSpeed();
-			break;
-		case "left":
+			top += entity.getSpeed();
+		}
+		if (entity.getDirection().contains("left")) {
 			left -= entity.getSpeed();
-			break;
-		case "right":
+			right -= entity.getSpeed();
+		}
+		if (entity.getDirection().contains("right")) {
 			right += entity.getSpeed();
-			break;
+			left += entity.getSpeed();
 		}
 
 		// check intersection (Hard Intersection)
@@ -194,20 +195,22 @@ public class CollisionManager {
 		int top2 = entity2.getWorldY() + entity2.getHitBox().y;
 		int bottom2 = entity2.getWorldY() + entity2.getHitBox().y + entity2.getHitBox().height;
 
-		// calculate players next position
-		switch (entity.getDirection()) {
-		case "up":
+		// CALCULATES ENTITYS NEXT POSITION
+		if (entity.getDirection().contains("up")) {
 			top -= entity.getSpeed();
-			break;
-		case "down":
+			bottom -= entity.getSpeed();
+		}
+		if (entity.getDirection().contains("down")) {
 			bottom += entity.getSpeed();
-			break;
-		case "left":
+			top += entity.getSpeed();
+		}
+		if (entity.getDirection().contains("left")) {
 			left -= entity.getSpeed();
-			break;
-		case "right":
+			right -= entity.getSpeed();
+		}
+		if (entity.getDirection().contains("right")) {
 			right += entity.getSpeed();
-			break;
+			left += entity.getSpeed();
 		}
 
 		// check intersection (Hard Intersection)
@@ -216,7 +219,7 @@ public class CollisionManager {
 
 	// METHOD WHICH CHECK IF HTIBOX OVERLAP VIA AABB CHECK - FOR PLAYER AND ENTITY
 	// (ONLY FOR INTERACTION)
-	public boolean intersects(Player player, Entity entity) {
+	public boolean intersectsInteraction(Player player, Entity entity) {
 		// DETERMINTE POS PLAYER
 		int left = player.getWorldX() + player.getInteractionHitBox().x;
 		int right = player.getWorldX() + player.getInteractionHitBox().x + player.getInteractionHitBox().width;
@@ -232,28 +235,31 @@ public class CollisionManager {
 		// check intersection
 		return (!(left > right2 || right < left2 || top > bottom2 || bottom < top2));
 	}
-	
+
 	public void checkCollision(Player player) {
 		checkTile(player);
 		checkEntities(player);
 		checkObject(player);
 	}
-	
+
 	public void checkCollision(Entity entity) {
 		checkTile(entity);
 		checkEntities(entity);
 		checkObject(entity);
 		checkPlayer(entity);
 	}
-	
+
 	public void drawHitBox(Graphics2D g2, Entity entity) {
 		g2.setColor(Color.red);
-		g2.drawRect(entity.calculatingScreenHitBoxXPosition(player.getWorldX()), entity.calculatingScreenHitBoxYPosition(player.getWorldY()), entity.getHitBox().width, entity.getHitBox().height);
+		g2.drawRect(entity.calculatingScreenHitBoxXPosition(player.getWorldX()),
+				entity.calculatingScreenHitBoxYPosition(player.getWorldY()), entity.getHitBox().width,
+				entity.getHitBox().height);
 	}
-	
+
 	public void drawHitBox(Graphics2D g2, Player player) {
 		g2.setColor(Color.red);
-		g2.drawRect(Config.PLAYER_SCREEN_X + player.getHitBox().x, Config.PLAYER_SCREEN_Y + player.getHitBox().y, player.getHitBox().width, player.getHitBox().height);
+		g2.drawRect(Config.PLAYER_SCREEN_X + player.getHitBox().x, Config.PLAYER_SCREEN_Y + player.getHitBox().y,
+				player.getHitBox().width, player.getHitBox().height);
 	}
-	
+
 }

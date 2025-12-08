@@ -42,22 +42,22 @@ public class Player extends Entity {
 	}
 	
 	private void setDirection() {
+		
+		String direction =  "";
+		
 		if (up) {
-			setDirection("up");
-			return;
+			direction  += "up";
 		}
 		if (down) {
-			setDirection("down");
-			return;
+			direction  += "down";
 		} 
 		if (right) {
-			setDirection("right");
-			return;
+			direction  += "right";
 		} 
 		if (left) {
-			setDirection("left");
-			return;
+			direction  += "left";
 		}
+		setDirection(direction);
 	}
 	
 	private void resetPlayerInputs() {
@@ -65,8 +65,25 @@ public class Player extends Entity {
 		setDown(false);
 		setLeft(false);
 		setRight(false);
-}
-
+	}
+	
+	//MOVES ENTITY ACCORDINGLY
+	protected void move() {
+		if (up) {
+			setWorldY(getWorldY() - getSpeed());  
+		}
+		if (down) {
+			setWorldY(getWorldY() + getSpeed());  
+		}
+		if (left) {
+			setWorldX(getWorldX() - getSpeed());  
+		}
+		if (right) {
+			setWorldX(getWorldX() + getSpeed());  
+		}
+	}
+	
+	
 	//UPDATING PLAYER VALUES
 	public void update() {
 		setCollisionOn(false);
@@ -89,39 +106,37 @@ public class Player extends Entity {
 	public void draw(Graphics2D g2) {
 		BufferedImage image = null;
 
-		switch (getDirection()) {
-		case "up":
+		if(getDirection().contains("up")) {
 			if (getSpriteNum() == 1) {
 				image = getSprites()[0];
 			}
 			if (getSpriteNum() == 2) {
 				image = getSprites()[1];
 			}
-			break;
-		case "down":
+		}
+		else if(getDirection().contains("down")) {
 			if (getSpriteNum() == 1) {
 				image = getSprites()[2];
 			}
 			if (getSpriteNum() == 2) {
 				image = getSprites()[3];
 			}
-			break;
-		case "left":
+		}
+		else if(getDirection().contains("left")) {
 			if (getSpriteNum() == 1) {
 				image = getSprites()[4];
 			}
 			if (getSpriteNum() == 2) {
 				image = getSprites()[5];
 			}
-			break;
-		case "right":
+		}
+		else if(getDirection().contains("right")) { 
 			if (getSpriteNum() == 1) {
 				image = getSprites()[6];
 			}
 			if (getSpriteNum() == 2) {
 				image = getSprites()[7];
 			}
-			break;
 		}
 
 		g2.drawImage(image, Config.PLAYER_SCREEN_X,Config.PLAYER_SCREEN_Y, Config.TILE_SIZE, Config.TILE_SIZE, null);

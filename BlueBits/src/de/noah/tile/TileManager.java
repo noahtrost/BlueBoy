@@ -32,7 +32,7 @@ public class TileManager {
 
 	private void setUpTiles() {
 		for (int i = 0; i < tile.length; i++) {
-			if ((i > 11 && i < 26) || i > 40) {
+			if ((i > 11 && i < 26) || i > 39) {
 				tile[i] = new Tile(true);
 				continue;
 			}
@@ -105,8 +105,8 @@ public class TileManager {
 				g2.drawImage(image, screenX, screenY, Config.TILE_SIZE, Config.TILE_SIZE, null);
 				
 				//DEBUG ONLY
-				g2.setColor(Color.yellow);
-				g2.drawRect(screenX, screenY, Config.TILE_SIZE, Config.TILE_SIZE);
+//				g2.setColor(Color.yellow);
+//				g2.drawRect(screenX, screenY, Config.TILE_SIZE, Config.TILE_SIZE);
 			}
 
 		}

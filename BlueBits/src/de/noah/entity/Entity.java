@@ -51,26 +51,6 @@ public class Entity {
 
 	//--------------------REAL-METHODS---------------------------------------- 
 	
-	//RETURN DETERMINES X-SCREEN POSTION OF ENTITY. CALCULATED RELATIVE TO PLAYER. 
-	private int calculatingScreenXPosition(int playerWorldX) {
-		return worldX - playerWorldX + Config.PLAYER_SCREEN_X;
-	}
-	
-	//RETURN DETERMINES Y-SCREEN POSTION OF ENTITY. CALCULATED RELATIVE TO PLAYER. 
-	private int calculatingScreenYPosition(int playerWorldY) {
-		return worldY - playerWorldY + Config.PLAYER_SCREEN_Y;
-	}
-	
-	//RETURN DETERMINES X-SCREEN POSTION OF ENTITYSHITBOX. CALCULATED RELATIVE TO PLAYER. 
-	public int calculatingScreenHitBoxXPosition(int playerWorldX) {
-		return worldX + hitBox.x- playerWorldX + Config.PLAYER_SCREEN_X;
-	}
-	
-	//RETURN DETERMINES Y-SCREEN POSTION OF ENTITYSHITBOX. CALCULATED RELATIVE TO PLAYER. 
-	public int calculatingScreenHitBoxYPosition(int playerWorldY) {
-		return worldY + hitBox.x - playerWorldY + Config.PLAYER_SCREEN_Y;
-	}
-	
 	//UPDATE SPRITES
 	protected void setFrameSprite() {
 		spriteCounter++;
@@ -92,13 +72,13 @@ public class Entity {
 		if (direction.equals("up")) {
 			worldY  = worldY - speed; 
 		}
-		else if (direction.equals("down")) {
+		if (direction.equals("down")) {
 			worldY  = worldY + speed; 
 		}
-		else if (direction.equals("left")) {
+		if (direction.equals("left")) {
 			worldX  = worldX - speed; 
 		}
-		else if (direction.equals("right")) {
+		if (direction.equals("right")) {
 			worldX  = worldX + speed; 
 		}
 	}
@@ -114,6 +94,26 @@ public class Entity {
 		setFrameSprite();
 	}
 	
+	//RETURN DETERMINES X-SCREEN POSTION OF ENTITY. CALCULATED RELATIVE TO PLAYER. 
+		private int calculatingScreenXPosition(int playerWorldX) {
+			return worldX - playerWorldX + Config.PLAYER_SCREEN_X;
+		}
+		
+		//RETURN DETERMINES Y-SCREEN POSTION OF ENTITY. CALCULATED RELATIVE TO PLAYER. 
+		private int calculatingScreenYPosition(int playerWorldY) {
+			return worldY - playerWorldY + Config.PLAYER_SCREEN_Y;
+		}
+		
+		//RETURN DETERMINES X-SCREEN POSTION OF ENTITYSHITBOX. CALCULATED RELATIVE TO PLAYER. 
+		public int calculatingScreenHitBoxXPosition(int playerWorldX) {
+			return worldX + hitBox.x- playerWorldX + Config.PLAYER_SCREEN_X;
+		}
+		
+		//RETURN DETERMINES Y-SCREEN POSTION OF ENTITYSHITBOX. CALCULATED RELATIVE TO PLAYER. 
+		public int calculatingScreenHitBoxYPosition(int playerWorldY) {
+			return worldY + hitBox.x - playerWorldY + Config.PLAYER_SCREEN_Y;
+		}
+	
 	//DRAW METHOD - DRAWS CURRENT SPRITE WHEN ENTIYS COORDS ARE IN SCREEN
 	public void draw(Graphics2D g2, int playerWorldX, int playerWorldY) {
 		
@@ -122,8 +122,8 @@ public class Entity {
 		int screenY = calculatingScreenYPosition(playerWorldY);
 
 		// CHECK IF COORDS IN SCREEN
-		if (!(screenX - Config.TILE_SIZE >= 0 && screenX <= Config.SCREEN_WIDTH  + Config.TILE_SIZE)) return;
-		if (!(screenY - Config.TILE_SIZE >= 0 && screenY <= Config.SCREEN_HEIGHT + Config.TILE_SIZE)) return;
+		if (!(screenX  >= - Config.TILE_SIZE && screenX <= Config.SCREEN_WIDTH  + Config.TILE_SIZE)) return;
+		if (!(screenY  >= - Config.TILE_SIZE && screenY <= Config.SCREEN_HEIGHT + Config.TILE_SIZE)) return;
 		
 		
 		//GET THE RIGHT SPRITE

@@ -4,7 +4,6 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
-import java.awt.Toolkit;
 
 import javax.swing.JPanel;
 
@@ -60,10 +59,7 @@ public class GamePanel extends JPanel implements Runnable {
 	public SoundManager soundEffectManager = new SoundManager();
 
 	// GAME STATE
-	public int gameState;
-	public final static int PLAY_STATE = 1;
-	public final static int PAUSE_STATE = 2;
-	public final static int DIALOG_STATE = 3;
+	public GameState gameState;
 
 	// -=------------------------------------CONSTRUCTOR-----------------------------
 
@@ -86,7 +82,7 @@ public class GamePanel extends JPanel implements Runnable {
 		setCollisionManagerToAllEntitys();
 
 		playMusic();
-		gameState = PLAY_STATE;
+		gameState = GameState.PLAYSTATE;
 	}
 
 	private void setCollisionManagerToAllEntitys() {
@@ -137,7 +133,7 @@ public class GamePanel extends JPanel implements Runnable {
 			if (delta >= 1.0) {
 				update();
 				repaint();
-				delta = 0.0;
+				delta -= 1.0;
 				drawCount++;
 				Config.FRAMECOUNT++;
 			}
@@ -152,7 +148,7 @@ public class GamePanel extends JPanel implements Runnable {
 	}
 
 	private void update() {
-		if (gameState == PLAY_STATE) {
+		if (gameState == GameState.PLAYSTATE) {
 
 			// PLAYERINPUTS
 			setPlayerInputs();
@@ -172,11 +168,14 @@ public class GamePanel extends JPanel implements Runnable {
 	private void setPlayerInputs() {
 		if (inputManager.isUp()) {
 			player.setUp(true);
-		} else if (inputManager.isDown()) {
+		} 
+		if (inputManager.isDown()) {
 			player.setDown(true);
-		} else if (inputManager.isLeft()) {
+		}
+		if (inputManager.isLeft()) {
 			player.setLeft(true);
-		} else if (inputManager.isRight()) {
+		} 
+		if (inputManager.isRight()) {
 			player.setRight(true);
 		}
 	}
@@ -205,15 +204,14 @@ public class GamePanel extends JPanel implements Runnable {
 		// Player
 		player.draw(g2);
 
-		// DEBUG ONLY HITBOXES
-		collisionManager.drawHitBox(g2, player);
-		collisionManager.drawHitBox(g2, npcs[0]);
+//		// DEBUG ONLY HITBOXES
+//		collisionManager.drawHitBox(g2, player);
+//		collisionManager.drawHitBox(g2, npcs[0]);
 		
 		// UI
 		ui.draw(g2);
 
 		g2.dispose();
-		Toolkit.getDefaultToolkit().sync();
 	}
 
 }
