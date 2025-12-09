@@ -131,12 +131,14 @@ public class Game {
 		if (gameStateManager.getGameState() == GameState.PLAYSTATE) {
 			if (player.getinteractiableNPC() != -1 && inputManager.isSpaceJustPressed()) {
 				gameStateManager.setGameState(GameState.DIALOGSTATE);
+				inputManager.setSpaceJustPressed(false);
 			}
 		}
 		// DIALOG -> PLAYSTATE
 		else if (gameStateManager.getGameState() == GameState.DIALOGSTATE) {
-			if (inputManager.isSpaceJustPressed()) {
+			if (inputManager.isEnterJustPressed()) {
 				gameStateManager.setGameState(GameState.PLAYSTATE);
+				
 			}
 		}
 	}
@@ -155,12 +157,16 @@ public class Game {
 		}
 		// SET GAME STATE FOR NEW FRAME
 		setNextGameState();
-		inputManager.setSpaceJustPressed(false);
 	}
 	
 	
 	// --------------------DRAW-------------------------------
 	
+	private void setDialogStateUIInputs() {
+		if (inputManager.isSpaceJustPressed()) {
+			dialogStateUI.setSpace(true);
+		}
+	}
 
 	public void draw(Graphics2D g2) {
 		// Tile
@@ -194,9 +200,15 @@ public class Game {
 			playStateUI.draw(g2, player.getinteractiableNPC());
 		}
 		// DIALOGSTATE
+		
 		else if (gameStateManager.getGameState() == GameState.DIALOGSTATE) {
-			dialogStateUI.draw(g2);
+			setDialogStateUIInputs();
+			dialogStateUI.draw(g2, npcs[player.getinteractiableNPC()].getSpeech());
+			inputManager.setSpaceJustPressed(false);
 		}
+		
+		inputManager.setSpaceJustPressed(false);
+		inputManager.setEnterJustPressed(false);
 	}
 	
 	

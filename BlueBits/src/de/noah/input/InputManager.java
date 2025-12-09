@@ -7,9 +7,10 @@ import java.awt.event.KeyListener;
 public class InputManager implements KeyListener {
 
 //--------------------ATTRIBUTES-----------------------------
-	private boolean up, down, left, right, space, pause;
+	private boolean up, down, left, right, space, pause, enter;
 
 	private boolean spaceJustPressed = false;
+	private boolean enterJustPressed = false;
 //--------------------CONSTRUCTOR----------------------------
 
 	public InputManager() {}
@@ -44,6 +45,11 @@ public class InputManager implements KeyListener {
 			space = true;
 		}
 		
+		if (code == KeyEvent.VK_ENTER && !isEnter()) {
+			setEnterJustPressed(true);
+			setEnter(true);
+		}
+		
 	}
 	
 	@Override
@@ -68,6 +74,10 @@ public class InputManager implements KeyListener {
 		if (code == KeyEvent.VK_SPACE) {
 			space = false;
 			spaceJustPressed = false;
+		}
+		if (code == KeyEvent.VK_ENTER) {
+			setEnter(false);
+			setEnterJustPressed(false);
 		}
 	}
 
@@ -126,6 +136,22 @@ public class InputManager implements KeyListener {
 
 	public void setSpaceJustPressed(boolean spaceJustPressed) {
 		this.spaceJustPressed = spaceJustPressed;
+	}
+
+	public boolean isEnterJustPressed() {
+		return enterJustPressed;
+	}
+
+	public void setEnterJustPressed(boolean enterJustPressed) {
+		this.enterJustPressed = enterJustPressed;
+	}
+
+	public boolean isEnter() {
+		return enter;
+	}
+
+	public void setEnter(boolean enter) {
+		this.enter = enter;
 	}
 
 }

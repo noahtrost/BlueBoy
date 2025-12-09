@@ -13,6 +13,7 @@ public class DialogStateUI extends StateUI {
 	// --------------------CONSTRUCTOR---------------------------------------
 	
 	
+	
 	public DialogStateUI(BufferedImage[] sprites) {
 		super(sprites);
 	}
@@ -20,10 +21,15 @@ public class DialogStateUI extends StateUI {
 	
 	// --------------------DRAWING-------------------------------------------
 	
-		public void draw(Graphics2D g2) {
+		public void draw(Graphics2D g2, String[] npcLines) {
 			super.draw(g2);
-			
-			 // 1. Transparentes Hintergrundfeld
+			drawTextBox(g2);
+			drawDialogLine(g2, npcLines);
+			space = false;
+		}
+		
+		private void drawTextBox(Graphics2D g2) {
+			// 1. Transparentes Hintergrundfeld
 		    g2.setColor(new Color(0, 0, 0, 200));
 		    g2.fillRoundRect(Config.TILE_SIZE * 2, Config.TILE_SIZE/2,
 		                Config.TILE_SIZE * 12, Config.TILE_SIZE * 3,20,20);
@@ -35,6 +41,19 @@ public class DialogStateUI extends StateUI {
 		    g2.drawRoundRect(Config.TILE_SIZE * 2, Config.TILE_SIZE/2,
 		                Config.TILE_SIZE * 12, Config.TILE_SIZE * 3,20,20);
 		    g2.setStroke(old);
+		}
+		
+		private void drawDialogLine(Graphics2D g2, String[] npcLines) {
+			
+			messageToDisplay = npcLines[speechCounter];
+			g2.setColor(Color.white);
+			baseFont = baseFont.deriveFont(18f);
+			g2.drawString(messageToDisplay,Config.TILE_SIZE * 2 + 20, Config.TILE_SIZE + 10);
+			
+			if(space) {
+				if(speechCounter < npcLines.length-1)
+				speechCounter++;
+			}
 		}
 		
 }

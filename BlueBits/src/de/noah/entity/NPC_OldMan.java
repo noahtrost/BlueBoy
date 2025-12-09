@@ -7,22 +7,33 @@ public class NPC_OldMan extends Entity {
 
 	// --------------------ATTIBUTES---------------------------------------
 
-	// COUNTER AND LIMIT FOR NEW DIRECTION - SETS OLDMAN UP TO 3 SECONDS IN ONE DIRECTION
+	// COUNTER AND LIMIT FOR NEW DIRECTION - SETS OLDMAN UP TO 3 SECONDS IN ONE
+	// DIRECTION
 	private int directionSwitchCounter;
 	private final int DIRECTION_LIMIT = 180;
 	private int diretionDecider;
-
 	
-	//--------------------CONSTRCTOR---------------------------------------- 
+	//CHILLING
+	private int currentChillLimit = 0;
+
+	// --------------------CONSTRCTOR----------------------------------------
 
 	public NPC_OldMan(int worldX, int worldY, int speed, BufferedImage[] sprites, boolean interactibleNPC) {
 		super(worldX, worldY, speed, sprites, interactibleNPC);
+		setupLines();
 	}
 
-	
-	
-	//--------------------REAL-METHODS---------------------------------------- 
-	
+	private void setupLines() {
+		setSpeech(new String[5]);
+		getSpeech()[0] = "A Stranger?... How...?";
+		getSpeech()[1] = "How did you come here?";
+		getSpeech()[2] = "You don't know? - That's even more odd.";
+		getSpeech()[3] = "I am afraid I can't help you find your way back home.. But I heard this is a way.";
+		getSpeech()[4] = "Good luck my young friend!";
+	}
+
+	// --------------------UPDATING THE OLD MAN----------------------------------------
+
 	// DECIDING NEXT DIRECTION WITH PROBABILITY OF 1/4
 	private void setDirection() {
 
@@ -42,16 +53,59 @@ public class NPC_OldMan extends Entity {
 		directionSwitchCounter = Entity.random.nextInt(120);
 	}
 
-	//SPECIFIC ACTION FOR OLDMAN ENTITY
-	public void setAction() {
-		
-		if(isPlayerCollision()) {
-			setDirection(getDirection());
-			setSpriteNum(1);
+	private boolean stillChillin() {
+
+		if (getChillTime() >= currentChillLimit) {
+			setChillTime(0);
+			setChillin(false);
+			return false;
 		}
 		
-		else if(directionSwitchCounter > DIRECTION_LIMIT || isCollisionOn()) setDirection();
-		directionSwitchCounter++;
-		
-	}		
+		setChillTime(getChillTime() + 1);
+		return true;
+	}
+
+	private boolean maybeChill() {
+		if (isChillin())
+			return true;
+
+		int randInt = random.nextInt(100);
+		if (randInt > 60) {
+			currentChillLimit = randInt * 3;
+			setChillTime(0);
+			setChillin(true);
+			if(getDirection().equals("up")) setDirection("down");
+			System.out.println("ChillTime");
+			return true;
+
+		}
+		return false;
+	}
+
+	public void setAction() {
+
+		if (isChillin()) {
+			if(stillChillin()) {
+				return;
+			};
+		}
+
+		if (isPlayerCollision()) {
+			setDirection(getDirection());
+			setSpriteNum(1);
+			return;
+		}
+
+		if (isCollisionOn()) {
+			setDirection();
+		} else if (directionSwitchCounter > DIRECTION_LIMIT) {
+			if (!maybeChill()) {
+				setDirection();
+			}
+		}
+
+		if (!isChillin())
+			directionSwitchCounter++;
+	}
+
 }

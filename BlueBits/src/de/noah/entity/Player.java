@@ -58,6 +58,8 @@ public class Player extends Entity {
 		if (left) {
 			direction  += "left";
 		}
+		
+		if(direction.equals("")) direction = getDirection();
 		setDirection(direction);
 	}
 	
@@ -88,15 +90,16 @@ public class Player extends Entity {
 	//UPDATING PLAYER VALUES
 	public void update() {
 		setCollisionOn(false);
+		setDirection();
 		
-		if (movementOccured()) {
-			setDirection();
-			collisionManager.checkCollision(this);
+		collisionManager.checkCollision(this);
 			if (isCollisionOn() == false) {
 				move();
 			}
+			
+		if(movementOccured()){
 			setFrameSprite();
-			}
+		}
 		
 		resetPlayerInputs();
 		}
@@ -199,8 +202,7 @@ public class Player extends Entity {
 	public void setSpace(boolean space) {
 		this.space = space;
 	}
-
-	// GETTERS AND SETTERS
+	
 	public Rectangle getInteractionHitBox() {
 		return interactionHitBox;
 	}

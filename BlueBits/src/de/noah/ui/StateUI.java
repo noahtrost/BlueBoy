@@ -17,9 +17,13 @@ public abstract class StateUI {
 
 	// --------------------ATTIBUTES---------------------------------------
 
+	protected boolean space, enter;
+	
+
 	protected BufferedImage[] sprites;
-	private Font baseFont;
+	protected Font baseFont;
 	protected String messageToDisplay = " ";
+	protected int speechCounter = 0;
 
 	// --------------------CONSTRUCTOR---------------------------------------
 
@@ -59,6 +63,15 @@ public abstract class StateUI {
 		// SET FONT AND COLOR
 		g2.setFont(baseFont);
 		g2.setColor(Color.white);
+	}
+	
+
+	public void setSpace(boolean space) {
+		this.space = space;
+	}
+
+	public void setEnter(boolean enter) {
+		this.enter = enter;
 	}
 
 }

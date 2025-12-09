@@ -20,6 +20,10 @@ public class Entity {
 	private int speed;
 	private String direction = "down";
 	
+	//NOMOVEMENT
+	private boolean chillin = false;
+	private int chillTime = 0;
+	
 	//SPRITES
 	private BufferedImage [] sprites;
 	private int spriteCounter = 0;
@@ -38,6 +42,10 @@ public class Entity {
 	//RANDON_NUMBER_GENERATOR
 	protected static Random random = new Random();
 	
+	//NPC LINES
+	private String [] speech;
+	
+	
 	//--------------------CONSTRCTOR---------------------------------------- 
 	
 	//CONSTRUCTOR
@@ -51,7 +59,7 @@ public class Entity {
 	
 
 
-	//--------------------REAL-METHODS---------------------------------------- 
+	//--------------------UPDATING THE ENTITYS---------------------------------------- 
 	
 	//UPDATE SPRITES
 	protected void setFrameSprite() {
@@ -91,10 +99,10 @@ public class Entity {
 		setCollisionOn(false);
 		collisionManager.checkCollision(this);
 		setAction();
-		if(!isCollisionOn()) {
+		if(!isCollisionOn() && !chillin) {
 			move();
 		}
-		setFrameSprite();
+		if (!chillin) setFrameSprite();
 	}
 	
 	//RETURN DETERMINES X-SCREEN POSTION OF ENTITY. CALCULATED RELATIVE TO PLAYER. 
@@ -291,4 +299,41 @@ public class Entity {
 	public void setDialogFacing(int dialogFacing) {
 		this.dialogFacing = dialogFacing;
 	}
+
+
+
+	public boolean isChillin() {
+		return chillin;
+	}
+
+
+
+	public void setChillin(boolean chillin) {
+		this.chillin = chillin;
+	}
+
+
+
+	public int getChillTime() {
+		return chillTime;
+	}
+
+
+
+	public void setChillTime(int chillTime) {
+		this.chillTime = chillTime;
+	}
+
+
+
+	public String [] getSpeech() {
+		return speech;
+	}
+
+
+
+	public void setSpeech(String [] speech) {
+		this.speech = speech;
+	}
+
 }
