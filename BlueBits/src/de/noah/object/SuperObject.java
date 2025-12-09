@@ -18,8 +18,8 @@ public class SuperObject {
 // --------------------CONSTRUCTOR---------------------------------------
 	public SuperObject(String name, int worldX, int worldY, boolean collision, BufferedImage sprite) {
 		this.name = name;
-		this.worldX = worldX;
-		this.worldY = worldY;
+		this.worldX = worldX*Config.TILE_SIZE;
+		this.worldY = worldY*Config.TILE_SIZE;
 		this.collision = collision;
 		this.sprite = sprite;
 	}
@@ -39,11 +39,11 @@ public class SuperObject {
 	public void draw(Graphics2D g2, int playerWorldX, int playerWorldY) {
 		// CALC SCREEN-COORDS
 		int screenX = calculatingScreenXPosition(playerWorldX);
-		int screenY = calculatingScreenXPosition(playerWorldY);
+		int screenY = calculatingScreenYPosition(playerWorldY);
 
 		// CHECK IF COORDS IN SCREEN
-		if (!(screenX - Config.TILE_SIZE >= 0 && screenX <= Config.SCREEN_WIDTH  + Config.TILE_SIZE)) return;
-		if (!(screenY - Config.TILE_SIZE >= 0 && screenY <= Config.SCREEN_HEIGHT + Config.TILE_SIZE)) return;
+		if (!(screenX >= -Config.TILE_SIZE && screenX <= Config.SCREEN_WIDTH + Config.TILE_SIZE))  return;
+		if (!(screenY >= -Config.TILE_SIZE && screenY <= Config.SCREEN_HEIGHT + Config.TILE_SIZE)) return;
 
 		//DRAW SPRITE
 		g2.drawImage(sprite, screenX, screenY, Config.TILE_SIZE, Config.TILE_SIZE, null);

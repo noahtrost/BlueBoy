@@ -7,6 +7,7 @@ import de.noah.config.Config;
 import de.noah.core.AssetSetter;
 import de.noah.core.CollisionManager;
 import de.noah.core.GameStateManager;
+import de.noah.core.ObjectManager;
 import de.noah.entity.Entity;
 import de.noah.entity.Player;
 import de.noah.gamestates.DialogState;
@@ -45,11 +46,13 @@ public class Game {
 
 	// SOUNDMANAGER
 	private SoundManager soundManager = new SoundManager();
-	@SuppressWarnings("unused")
 	private SoundManager soundEffectManager = new SoundManager();
 
 	// GAME STATE MANAGER
 	private GameStateManager gameStateManager = new GameStateManager();
+	
+	//OBJECTMANAGER
+	private ObjectManager objectManager;
 
 	// AssetSetter
 	private AssetSetter assetSetter = new AssetSetter();
@@ -63,11 +66,13 @@ public class Game {
 
 	// OBJECTS
 	private final SuperObject objects[] = new SuperObject[10];
-
+	
 	
 	// INPUTMANAGER
 	private final InputManager inputManager;
-
+	
+	// RUNNING
+	private boolean running;
 	
 	// -------------------CONSTRUCTOR----------------------
 
@@ -95,8 +100,9 @@ public class Game {
 		player = new Player(Config.TILE_SIZE * 23, Config.TILE_SIZE * 21, 4, spriteManager.getPlayerSprites());
 		assetSetter.setObjects(objects, spriteManager.getObjectSprites());
 		assetSetter.setNPCS(npcs, spriteManager.getAllNPCsprites());
+		objectManager = new ObjectManager(player, objects, soundEffectManager );
 		collisionManager = new CollisionManager(player, npcs, objects, tileManager.getMapTileNum(),
-				tileManager.getTile());
+				tileManager.getTile(), objectManager);
 		setCollisionManagerToAllEntitys();
 		playStateUI = new PlayStateUI(spriteManager.getUiSprites());
 		dialogStateUI = new DialogStateUI(spriteManager.getUiSprites());
@@ -105,6 +111,7 @@ public class Game {
 		dialogState = new DialogState(player, npcs);
 
 		soundManager.playMusic(0);
+		running = true;
 	}
 
 	
@@ -138,8 +145,11 @@ public class Game {
 		else if (gameStateManager.getGameState() == GameState.DIALOGSTATE) {
 			if (inputManager.isEnterJustPressed()) {
 				gameStateManager.setGameState(GameState.PLAYSTATE);
-				
 			}
+		}
+		if(objectManager.isEndGame()) {
+			running = false;
+			soundManager.stop();
 		}
 	}
 
@@ -161,6 +171,7 @@ public class Game {
 	
 	
 	// --------------------DRAW-------------------------------
+	
 	
 	private void setDialogStateUIInputs() {
 		if (inputManager.isSpaceJustPressed()) {
@@ -189,12 +200,12 @@ public class Game {
 		// Player
 		player.draw(g2);
 
-//			// DEBUG ONLY HITBOXES
+			// DEBUG ONLY HITBOXES
 //			collisionManager.drawHitBox(g2, player);
 //			collisionManager.drawInteractionHitBox(g2, player);
 //			collisionManager.drawHitBox(g2, npcs[0]);
 
-		// UI
+		// UI ------
 		// PLATSTATE
 		if (gameStateManager.getGameState() == GameState.PLAYSTATE) {
 			playStateUI.draw(g2, player.getinteractiableNPC());
@@ -209,6 +220,11 @@ public class Game {
 		
 		inputManager.setSpaceJustPressed(false);
 		inputManager.setEnterJustPressed(false);
+	}
+
+
+	public boolean isRunning() {
+		return running;
 	}
 	
 	

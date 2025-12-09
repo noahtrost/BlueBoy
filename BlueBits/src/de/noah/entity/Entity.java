@@ -50,8 +50,8 @@ public class Entity {
 	
 	//CONSTRUCTOR
 	public Entity(int worldX, int worldY, int speed, BufferedImage[] sprites, boolean interactibleNPC) {
-		this.worldX = worldX;
-		this.worldY = worldY;
+		this.worldX = Config.TILE_SIZE*worldX;
+		this.worldY = Config.TILE_SIZE*worldY;
 		this.speed = speed;
 		this.sprites = sprites;
 		this.interactibaleNPC = interactibleNPC;

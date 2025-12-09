@@ -19,14 +19,16 @@ public class CollisionManager {
 	private SuperObject[] objects;
 	private int[][] mapTileNum;
 	private Tile[] tile;
+	private ObjectManager objectManager;
 
 //-----------------------CONSTRCTOR---------------------------------------- 
-	public CollisionManager(Player player, Entity[] npcs, SuperObject[] objects, int[][] mapTileNum, Tile[] tile) {
+	public CollisionManager(Player player, Entity[] npcs, SuperObject[] objects, int[][] mapTileNum, Tile[] tile, ObjectManager objectManager) {
 		this.player = player;
 		this.npcs = npcs;
 		this.objects = objects;
 		this.mapTileNum = mapTileNum;
 		this.tile = tile;
+		this.objectManager = objectManager;
 	}
 
 //-----------------------REAL-METHODS---------------------------------------
@@ -243,7 +245,7 @@ public class CollisionManager {
 	public void checkCollision(Player player) {
 		checkTile(player);
 		checkEntities(player);
-		checkObject(player);
+		objectManager.handle(checkObject(player));
 		player.setinteractiableNPC(checkInteractibleEntities(player));
 	}
 

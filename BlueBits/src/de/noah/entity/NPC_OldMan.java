@@ -27,9 +27,9 @@ public class NPC_OldMan extends Entity {
 		setSpeech(new String[5]);
 		getSpeech()[0] = "A Stranger?... How...?";
 		getSpeech()[1] = "How did you come here?";
-		getSpeech()[2] = "You don't know? - That's even more odd.";
-		getSpeech()[3] = "I am afraid I can't help you find your way back home.. But I heard this is a way.";
-		getSpeech()[4] = "Good luck my young friend!";
+		getSpeech()[2] = "You don't know..?\nThat's even more odd.";
+		getSpeech()[3] = "I am afraid I can't help you\nfind your way back home..\nBut I heard there is a way.";
+		getSpeech()[4] = "Good luck to you my young\nfriend!";
 	}
 
 	// --------------------UPDATING THE OLD MAN----------------------------------------
@@ -70,12 +70,11 @@ public class NPC_OldMan extends Entity {
 			return true;
 
 		int randInt = random.nextInt(100);
-		if (randInt > 60) {
+		if (randInt < 35) {
 			currentChillLimit = randInt * 3;
 			setChillTime(0);
 			setChillin(true);
 			if(getDirection().equals("up")) setDirection("down");
-			System.out.println("ChillTime");
 			return true;
 
 		}
@@ -98,7 +97,7 @@ public class NPC_OldMan extends Entity {
 
 		if (isCollisionOn()) {
 			setDirection();
-		} else if (directionSwitchCounter > DIRECTION_LIMIT) {
+		} else if (directionSwitchCounter > DIRECTION_LIMIT) { 
 			if (!maybeChill()) {
 				setDirection();
 			}

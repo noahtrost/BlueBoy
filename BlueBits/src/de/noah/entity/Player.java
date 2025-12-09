@@ -9,7 +9,7 @@ import de.noah.config.Config;
 
 //PLAYER CLASS
 public class Player extends Entity {
-
+	private int keyCounter = 0;
 	
 	// --------------------ATTIBUTES---------------------------------------
 
@@ -27,17 +27,16 @@ public class Player extends Entity {
 	// --------------------CONSTRUCTOR---------------------------------------
 
 	public Player(int worldX, int worldY, int speed, BufferedImage[] sprites) {
-		super(Config.TILE_SIZE*23, Config.TILE_SIZE*21, speed, sprites, false);
+		super(23, 21, speed, sprites, false);
 		Rectangle playerHitBox = new Rectangle(8,16,32,32);
 		setHitBox(playerHitBox);
 		this.interactionHitBox = new Rectangle(-Config.TILE_SIZE, -Config.TILE_SIZE, Config.TILE_SIZE*3, Config.TILE_SIZE*3);
 	}
 
 	
-	// --------------------REAL-METHODS---------------------------------------
+	// --------------------UDPATING---------------------------------------
 
 	
-	// CHECKS IF THERE WAS ANY INPUTS
 	private boolean movementOccured() {
 		return (up || down|| left || right);
 	}
@@ -69,8 +68,7 @@ public class Player extends Entity {
 		setLeft(false);
 		setRight(false);
 	}
-	
-	//MOVES ENTITY ACCORDINGLY
+
 	protected void move() {
 		if (up) {
 			setWorldY(getWorldY() - getSpeed());  
@@ -85,7 +83,6 @@ public class Player extends Entity {
 			setWorldX(getWorldX() + getSpeed());  
 		}
 	}
-	
 	
 	//UPDATING PLAYER VALUES
 	public void update() {
@@ -103,7 +100,8 @@ public class Player extends Entity {
 		
 		resetPlayerInputs();
 		}
-		
+
+	// --------------------DRAWING---------------------------------------
 
 	//DRAWS PLAYER
 	public void draw(Graphics2D g2) {
@@ -220,5 +218,15 @@ public class Player extends Entity {
 
 	public void setinteractiableNPC(int interactiableNPC) {
 		this.interactiableNPC = interactiableNPC;
+	}
+
+
+	public int getKeyCounter() {
+		return keyCounter;
+	}
+
+
+	public void setKeyCounter(int keyCounter) {
+		this.keyCounter = keyCounter;
 	}
 }
