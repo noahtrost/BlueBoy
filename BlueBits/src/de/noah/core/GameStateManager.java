@@ -1,6 +1,6 @@
-package de.noah.util;
+package de.noah.core;
 
-import de.noah.main.GameState;
+import de.noah.gamestates.GameState;
 
 //GAMESTATE MANAGER CLASS
 public class GameStateManager {

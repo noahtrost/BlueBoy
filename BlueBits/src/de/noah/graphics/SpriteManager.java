@@ -1,11 +1,11 @@
-package de.noah.util;
+package de.noah.graphics;
 
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import javax.imageio.ImageIO;
 
-import de.noah.main.Config;
+import de.noah.config.Config;
 
 public class SpriteManager {
 

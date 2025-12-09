@@ -19,8 +19,7 @@ public class Main {
 		window.pack();
 		
 		//SETTING GAME UP AND STARTING GAME THREAD
-		gamePanel.setupGame();
-		gamePanel.startGameThread();
+		gamePanel.startGame();
 
 		//MAKE WINDOW VISIBLE AFTER EVERTHING IS SETUP  - DRAWING STARTS NOW
 		window.setLocationRelativeTo(null);

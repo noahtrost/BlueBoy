@@ -1,10 +1,10 @@
-package de.noah.util;
+package de.noah.core;
 
 import java.awt.image.BufferedImage;
 
+import de.noah.config.Config;
 import de.noah.entity.Entity;
 import de.noah.entity.NPC_OldMan;
-import de.noah.main.Config;
 import de.noah.object.SuperObject;
 
 //CLASS DESIGNED TO PLACE NPC AND OBJECTS INTO THE WORLD

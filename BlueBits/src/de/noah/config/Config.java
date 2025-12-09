@@ -1,4 +1,4 @@
-package de.noah.main;
+package de.noah.config;
 
 
 //CONFIGURATION CLASS

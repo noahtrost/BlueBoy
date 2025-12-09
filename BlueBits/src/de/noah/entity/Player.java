@@ -4,7 +4,7 @@ import java.awt.Graphics2D;
 import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
 
-import de.noah.main.Config;
+import de.noah.config.Config;
 
 
 //PLAYER CLASS

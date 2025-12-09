@@ -5,8 +5,8 @@ import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
 import java.util.Random;
 
-import de.noah.main.Config;
-import de.noah.util.CollisionManager;
+import de.noah.config.Config;
+import de.noah.core.CollisionManager;
 
 //Entity CLASS specifies all entity in game like PLAYER, FRIENDLY-NPC, MONSTER-NPC ...
 public class Entity {

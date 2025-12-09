@@ -1,4 +1,4 @@
-package de.noah.util;
+package de.noah.input;
 
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;

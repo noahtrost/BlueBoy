@@ -1,11 +1,11 @@
-package de.noah.util;
+package de.noah.core;
 
 import java.awt.Color;
 import java.awt.Graphics2D;
 
+import de.noah.config.Config;
 import de.noah.entity.Entity;
 import de.noah.entity.Player;
-import de.noah.main.Config;
 import de.noah.object.SuperObject;
 import de.noah.tile.Tile;
 

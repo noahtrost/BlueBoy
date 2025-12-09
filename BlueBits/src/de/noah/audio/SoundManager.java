@@ -1,4 +1,4 @@
-package de.noah.util;
+package de.noah.audio;
 
 import java.net.URL;
 
@@ -52,6 +52,17 @@ public class SoundManager {
 	//STOPS SOUND WHICH WAS SET IN CLIP
 	public void stop() {
 		clip.stop();
+	}
+	
+	public void playMusic(int i) {
+		setSound(i);
+		play();
+		loop();
+	}
+	
+	public void playSE(int i) {
+		setSound(i);
+		play();
 	}
 
 }
