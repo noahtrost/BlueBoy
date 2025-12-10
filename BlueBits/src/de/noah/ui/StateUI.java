@@ -15,17 +15,15 @@ import de.noah.config.Config;
 
 public abstract class StateUI {
 
-	// --------------------ATTIBUTES---------------------------------------
+	// --------------------ATTIBUTES-------------------------------------
 
-	protected boolean space, enter;
-	
-
+	protected boolean space;
 	protected BufferedImage[] sprites;
 	protected Font baseFont;
 	protected String messageToDisplay = " ";
-	protected int speechCounter = 0;
+	
 
-	// --------------------CONSTRUCTOR---------------------------------------
+	// --------------------CONSTRUCTOR-----------------------------------
 
 	public StateUI(BufferedImage[] uiSprites) {
 		sprites = uiSprites;
@@ -65,13 +63,9 @@ public abstract class StateUI {
 		g2.setColor(Color.white);
 	}
 	
+	// --------------------GETTER/SETTERS---------------------------------
 
 	public void setSpace(boolean space) {
 		this.space = space;
 	}
-
-	public void setEnter(boolean enter) {
-		this.enter = enter;
-	}
-
 }

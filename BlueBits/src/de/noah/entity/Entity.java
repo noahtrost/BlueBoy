@@ -44,6 +44,7 @@ public class Entity {
 	
 	//NPC LINES
 	private String [] speech;
+	private int speechCounter = 0;
 	
 	
 	//--------------------CONSTRCTOR---------------------------------------- 
@@ -334,6 +335,18 @@ public class Entity {
 
 	public void setSpeech(String [] speech) {
 		this.speech = speech;
+	}
+
+
+
+	public int getSpeechCounter() {
+		return speechCounter;
+	}
+
+
+
+	public void setSpeechCounter(int speechCounter) {
+		this.speechCounter = speechCounter;
 	}
 
 }

@@ -5,9 +5,12 @@ import de.noah.entity.Player;
 
 public class DialogState extends State{
 	
+
+	private boolean objectDialog, npcDialog;
+	
 	// --------------------CONSTRUCTOR---------------------------------------
 
-	
+
 	public DialogState(Player player, Entity[] npcs) {
 		super(player, npcs);
 	}
@@ -17,7 +20,13 @@ public class DialogState extends State{
 	
 	@Override
 	public void update() {
-		makeEyeContact();
+		
+		if(npcDialog) {
+			makeEyeContact();
+		}
+		if(objectDialog) {
+			
+		}
 	}
 	
 	private void makeEyeContact() {
@@ -45,4 +54,26 @@ public class DialogState extends State{
 		}
 	}
 
+	
+	// --------------------GETTER/SETTERS-----------------------------------------
+
+
+	public void setObjectDialog(boolean objectDialog) {
+		this.objectDialog = objectDialog;
+	}
+
+
+	public void setNpcDialog(boolean npcDialog) {
+		this.npcDialog = npcDialog;
+	}
+
+	public boolean isObjectDialog() {
+		return objectDialog;
+	}
+
+
+	public boolean isNpcDialog() {
+		return npcDialog;
+	}
+	
 }

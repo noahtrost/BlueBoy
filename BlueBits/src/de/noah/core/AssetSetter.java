@@ -2,7 +2,6 @@ package de.noah.core;
 
 import java.awt.image.BufferedImage;
 
-import de.noah.config.Config;
 import de.noah.entity.Entity;
 import de.noah.entity.NPC_OldMan;
 import de.noah.object.OBJ_Chest;

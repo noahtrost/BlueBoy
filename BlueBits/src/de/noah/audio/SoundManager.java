@@ -20,7 +20,7 @@ public class SoundManager {
 		soundURL[1] = getClass().getResource("/sound/blocked.wav");
 		soundURL[2] = getClass().getResource("/sound/coin.wav");
 		soundURL[3] = getClass().getResource("/sound/fanfare.wav");
-		soundURL[4] = getClass().getResource("/sound/powerup.wav");
+		soundURL[4] = getClass().getResource("/sound/speak.wav");
 		soundURL[5] = getClass().getResource("/sound/unlock.wav");
 	}
 
@@ -60,8 +60,33 @@ public class SoundManager {
 		loop();
 	}
 	
-	public void playSE(int i) {
-		setSound(i);
+	public void playSE(String sound) {
+		switch(sound) {
+		case "blocked": {
+			setSound(1);
+			break;
+		}
+		
+		case "coin": {
+			setSound(2);
+			break;
+		}
+		
+		case "fanfare": {
+			setSound(3);
+			break;
+		}
+		
+		case "speak": {
+			setSound(4);
+			break;
+		}
+		
+		case "unlock": {
+			setSound(5);
+			break;
+		}	
+		}
 		play();
 	}
 
