@@ -99,10 +99,10 @@ public class Game {
 				tileManager.getTile(), objectManager);
 		setCollisionManagerToAllEntitys();
 		playStateUI = new PlayStateUI(spriteManager.getUiSprites());
-		dialogStateUI = new DialogStateUI(spriteManager.getUiSprites(), soundEffectManager);
+		dialogStateUI = new DialogStateUI(spriteManager.getUiSprites());
 		gameStateManager.setGameState(GameState.PLAYSTATE);
-		playState = new PlayState(player, npcs);
-		dialogState = new DialogState(player, npcs);
+		playState = new PlayState(player, npcs, playStateUI, soundEffectManager);
+		dialogState = new DialogState(player,npcs,dialogStateUI, soundEffectManager, objectManager);
 
 		soundManager.playMusic(0);
 		running = true;
@@ -118,7 +118,6 @@ public class Game {
 			soundEffectManager.playSE("speak");
 			dialogState.setNpcDialog(true);
 			gameStateManager.setGameState(GameState.DIALOGSTATE);
-			inputManager.setSpaceJustPressed(false);
 			return;
 		}
 
@@ -195,6 +194,8 @@ public class Game {
 
 	// UPDATES GAME LOGIC
 	public void update() {
+		
+		setNextGameState();
 
 		setPlayerInputs();
 
@@ -204,21 +205,16 @@ public class Game {
 		}
 
 		// UPDATES DIALOGSTATE
-		else if (gameStateManager.getGameState() == GameState.DIALOGSTATE) {
+		else if (gameStateManager.getGameState() == GameState.DIALOGSTATE) { 
+			if(inputManager.isSpaceJustPressed()) dialogState.setSpace(true);
 			dialogState.update();
 		}
 
-		setNextGameState();
+		// RESET THE JUST PRESSED INPUTS
+		resetJustPressedInputs();
 	}
 
 	// --------------------DRAW-------------------------------
-
-	// PROPAGATES INPUTS TO DIALOG STATE UI
-	private void setDialogStateUIInputs() {
-		if (inputManager.isSpaceJustPressed()) {
-			dialogStateUI.setSpace(true);
-		}
-	}
 
 	// DRAWS GAME
 	public void draw(Graphics2D g2) {
@@ -257,30 +253,17 @@ public class Game {
 		// CURRENT KEY COUNT)
 		if (gameStateManager.getGameState() == GameState.PLAYSTATE) {
 
-			playStateUI.draw(g2, player.getinteractiableNPC(), player.getKeyCounter());
+			playState.draw(g2);
 
 		}
 
 		// DRAW DIALOGSTATE - UI (EXPECTS INDEX OF INTERACTIABLE PLAYER IN RANGE &&
 		// PLAYER CURRENT KEY COUNT)
-		else if (gameStateManager.getGameState() == GameState.DIALOGSTATE) {
+		else if (gameStateManager.getGameState() == GameState.DIALOGSTATE) { 
 
-			setDialogStateUIInputs();
-
-			// DIALOG STATE INVOKED BY NPC
-			if (dialogState.isNpcDialog()) {
-				dialogStateUI.draw(g2, npcs[player.getinteractiableNPC()]);
-			}
-			// DIALOG STATE INVOKED BY OBJECT
-			else if (dialogState.isObjectDialog()) {
-				dialogStateUI.draw(g2, objectManager.getObjectName());
-				objectManager.setInvokeDialogState(false);
-			}
+			dialogState.draw(g2);
 
 		}
-
-		// RESET THE JUST PRESSED INPUTS
-		resetJustPressedInputs();
 	}
 
 	// --------------------GETTER AND SETTERS-------------------------------

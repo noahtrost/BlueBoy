@@ -17,10 +17,11 @@ public abstract class StateUI {
 
 	// --------------------ATTIBUTES-------------------------------------
 
-	protected boolean space;
+
 	protected BufferedImage[] sprites;
 	protected Font baseFont;
 	protected String messageToDisplay = " ";
+
 	
 
 	// --------------------CONSTRUCTOR-----------------------------------
@@ -64,8 +65,4 @@ public abstract class StateUI {
 	}
 	
 	// --------------------GETTER/SETTERS---------------------------------
-
-	public void setSpace(boolean space) {
-		this.space = space;
-	}
 }

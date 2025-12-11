@@ -6,21 +6,17 @@ import java.awt.Font;
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 
-import de.noah.audio.SoundManager;
 import de.noah.config.Config;
-import de.noah.entity.Entity;
 
 public class DialogStateUI extends StateUI {
 
 	// --------------------ATTRIBUTES----------------------------------------
 
-	SoundManager soundEffectManager;
 
 	// --------------------CONSTRUCTOR---------------------------------------
 
-	public DialogStateUI(BufferedImage[] sprites, SoundManager soundEffectManager) {
+	public DialogStateUI(BufferedImage[] sprites) {
 		super(sprites);
-		this.soundEffectManager = soundEffectManager;
 	}
 
 	// --------------------CONTAINER-FOR-GENERAL-DIALOG----------------------
@@ -101,13 +97,12 @@ public class DialogStateUI extends StateUI {
 
 	// --------------------CONTAINER-FOR-NPC-DIALOG--------------------------
 
-	private void drawNPCDialog(Graphics2D g2, Entity npc) {
+	private void drawNPCDialog(Graphics2D g2, String npcLine) {
 
 		g2.setColor(Color.white);
 		g2.setFont(baseFont.deriveFont(16f));
 
-		messageToDisplay = npc.getSpeech()[npc.getSpeechCounter()];
-		String lines[] = messageToDisplay.split("\n");
+		String lines[] = npcLine.split("\n");
 
 		int x = 116;
 		int y = 58;
@@ -115,12 +110,6 @@ public class DialogStateUI extends StateUI {
 		for (int i = 0; i < lines.length; i++) {
 			g2.drawString(lines[i], x, y + i * 25);
 		}
-
-		if (space && npc.getSpeechCounter() < npc.getSpeech().length - 1) {
-			npc.setSpeechCounter(npc.getSpeechCounter() + 1);
-			soundEffectManager.playSE("speak");
-		}
-		space = false;
 	}
 
 	// --------------------CONTAINER-FOR-OBJECT-DIALOG-----------------------
@@ -144,12 +133,13 @@ public class DialogStateUI extends StateUI {
 	// --------------------DRAWING-------------------------------------------
 
 	// DRAWS DIALOGSTATE INVOKED BY NPC DIALOG
-	public void draw(Graphics2D g2, Entity npc) {
+	public void draw(Graphics2D g2, String npcLine, boolean renderContinueField) {
 		super.draw(g2);
 		drawDialogBox(g2);
-		drawNPCDialog(g2, npc);
-		if (npc.getSpeechCounter() < npc.getSpeech().length - 1)
+		drawNPCDialog(g2, npcLine);
+		if (renderContinueField) {
 			drawContinueField(g2);
+		}
 		drawLeaveField(g2);
 	}
 
