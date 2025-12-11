@@ -9,19 +9,20 @@ import de.noah.ui.PlayStateUI;
 
 public class PlayState extends State {
 	
-
-	PlayStateUI playStateUI;
+	private Entity npcs[];
+	private PlayStateUI playStateUI;
 	
 	// --------------------CONSTRUCTOR---------------------------------------
 
-	public PlayState(Player player, Entity[] npcs, PlayStateUI playStateUI, SoundManager soundEffectManager) {
-		super(player, npcs, soundEffectManager);
+	public PlayState(Player player, SoundManager soundEffectManager, PlayStateUI playStateUI, Entity[] npcs) {
+		super(player, soundEffectManager);
+		this.npcs = npcs;
 		this.playStateUI = playStateUI;
 	}
 
 	// --------------------UPDATING---------------------------------------
 	
-	@Override
+
 	public void update() {
 		// UPDATE PLAYER
 		player.update();

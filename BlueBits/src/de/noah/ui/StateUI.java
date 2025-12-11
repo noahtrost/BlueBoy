@@ -44,13 +44,22 @@ public abstract class StateUI {
 
 	// --------------------DRAWING---------------------------------------
 
-	protected Point getCenteredMessagePosition(Graphics2D g2, String message, int yOffsetFromBottom) {
+	protected Point getCenteredMessagePosition(Graphics2D g2, String message ,int yOffsetFromBottom) {
 		FontMetrics fm = g2.getFontMetrics();
 		int textWidth = fm.stringWidth(message);
 
 		int x = (Config.SCREEN_WIDTH - textWidth) / 2;
 		int y = (Config.SCREEN_HEIGHT - yOffsetFromBottom);
 		return new Point(x, y);
+	}
+	
+	protected Point getCenteredMessagePosition(Graphics2D g2, String message, int left, int right ,int yOffsetFromBottom) {
+		FontMetrics fm = g2.getFontMetrics();
+		int textWidth = fm.stringWidth(message);
+
+		int x = ((right - left) - textWidth) / 2;
+		int y = (Config.SCREEN_HEIGHT - yOffsetFromBottom);
+		return new Point(left+x, y);
 	}
 
 	public void draw(Graphics2D g2) {

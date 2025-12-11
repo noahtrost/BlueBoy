@@ -30,11 +30,11 @@ public class SpriteManager {
 		
 		//CREATING SPRITE ARRAYS
 		playerSprites = new BufferedImage[8];
-		oldManSprites = new BufferedImage[8];
+		oldManSprites = new BufferedImage[9];
 		tileSprites = new BufferedImage[42];
 		objectSprites = new BufferedImage[5];
 		allNPCsprites = new BufferedImage[1][8];
-		uiSprites = new BufferedImage[2];
+		uiSprites = new BufferedImage[3];
 		
 		// LOAD SPRITES INTO ARRAY
 		loadPlayerSprites();
@@ -94,6 +94,9 @@ public class SpriteManager {
 			// OLD_MAN RIGHT SPRITES
 			oldManSprites[6] = ImageIO.read(getClass().getResource("/npcs/oldman_right_1.png"));
 			oldManSprites[7] = ImageIO.read(getClass().getResource("/npcs/oldman_right_2.png"));
+			
+			// OLD_MAN TALk SPRITES
+			oldManSprites[8] = ImageIO.read(getClass().getResource("/npcs/oldman_talk.png"));
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -182,6 +185,7 @@ public class SpriteManager {
 				// OBJECT-SPRITES
 				uiSprites[0] = ImageIO.read(getClass().getResource("/objects/talk.png"));
 				uiSprites[1] = ImageIO.read(getClass().getResource("/ui/key.png"));
+				uiSprites[2] = ImageIO.read(getClass().getResource("/ui/sword.png"));
 				
 			} catch (IOException e) {
 				e.printStackTrace();

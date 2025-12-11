@@ -24,12 +24,14 @@ public class NPC_OldMan extends Entity {
 	}
 
 	private void setupLines() {
-		setSpeech(new String[5]);
+		setSpeech(new String[7]);
 		getSpeech()[0] = "A Stranger?... How...?";
 		getSpeech()[1] = "How did you come here?";
-		getSpeech()[2] = "You don't know..?\nThat's even more odd.";
-		getSpeech()[3] = "I am afraid I can't help you\nfind your way back home..\nBut I heard there is a way.";
-		getSpeech()[4] = "Good luck to you my young\nfriend!";
+		getSpeech()[2] = "You don't know..?\nThat's even more odd..";
+		getSpeech()[3] = "Tell me, what is your\nName?";
+		getSpeech()[4] = "It's a pleasure to meet\nyou, *playerName* ";
+		getSpeech()[5] = "Listen.. I am afraid I can't help\nyou find your way back home..\nBut I heard there is a way.";
+		getSpeech()[6] = "Good luck to you my young\nfriend!";
 	}
 
 	// --------------------UPDATING THE OLD MAN----------------------------------------

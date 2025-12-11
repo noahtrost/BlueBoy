@@ -14,11 +14,11 @@ public class ObjectManager {
 	private Player player;
 	private SuperObject[] objects;
 	private SoundManager soundEffectManager;
-	private boolean invokeDialogState = false;
 	private boolean objectInteractionCoolDown = false;
 	private static Rectangle interactionCoolDownZone = new Rectangle(0, 0, 0, 0);
 	private boolean endGame = false;
-	private String objectName = "";
+	
+	private SuperObject dialogNeedingObject;
 
 	// -------------------CONSTRUCTOR----------------------
 	public ObjectManager(Player player, SuperObject[] objects, SoundManager soundEffectManager) {
@@ -69,8 +69,7 @@ public class ObjectManager {
 
 			// SETS DIALOG STATE TRUE AND PROPAGATES KIND OF OBJECT THAT TRIGGERED EVENT
 			soundEffectManager.playSE("blocked");
-			invokeDialogState = true;
-			objectName = "door";
+			setDialogNeedingObject(objects[i]);
 		}
 	}
 
@@ -114,23 +113,18 @@ public class ObjectManager {
 
 	// --------------------GETTER AND SETTERS-------------------------------
 
-	public void setInvokeDialogState(boolean invokeDialogState) {
-		this.invokeDialogState = invokeDialogState;
-	}
 
 	public boolean isEndGame() {
 		return endGame;
 	}
 
-	public boolean isInvokeDialogState() {
-		return invokeDialogState;
+
+	public SuperObject getDialogNeedingObject() {
+		return dialogNeedingObject;
 	}
 
-	public String getObjectName() {
-		return objectName;
+	public void setDialogNeedingObject(SuperObject dialogNeedingObject) {
+		this.dialogNeedingObject = dialogNeedingObject;
 	}
 
-	public void setObjectIndex(String objectName) {
-		this.objectName = objectName;
-	}
 }

@@ -1,7 +1,6 @@
 package de.noah.gamestates;
 
 import de.noah.audio.SoundManager;
-import de.noah.entity.Entity;
 import de.noah.entity.Player;
 
 public abstract class State {
@@ -9,21 +8,17 @@ public abstract class State {
 	// --------------------ATTIBUTES---------------------------------------
 	
 	Player player;
-	Entity npcs [];
-	private boolean space;
+	protected boolean space, left, right, enter;
+	
+
 	protected SoundManager soundEffectManager;
 
 	// --------------------CONSTRUCTOR---------------------------------------
 	
-	public State(Player player, Entity[] npcs, SoundManager soundEffectManager) {
+	public State(Player player, SoundManager soundEffectManager) {
 		this.player =  player;
-		this.npcs = npcs;
 		this.soundEffectManager = soundEffectManager;
 	}
-	
-	// --------------------UPDATING---------------------------------------
-	
-	public abstract void update();
 	
 	// --------------------GETTER/SETTER---------------------------------------
 
@@ -33,6 +28,30 @@ public abstract class State {
 
 	public void setSpace(boolean space) {
 		this.space = space;
+	}
+	
+	public boolean isLeft() {
+		return left;
+	}
+
+	public void setLeft(boolean left) {
+		this.left = left;
+	}
+
+	public boolean isRight() {
+		return right;
+	}
+
+	public void setRight(boolean right) {
+		this.right = right;
+	}
+
+	public boolean isEnter() {
+		return enter;
+	}
+
+	public void setEnter(boolean enter) {
+		this.enter = enter;
 	}
 
 }

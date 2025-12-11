@@ -1,29 +1,32 @@
 package de.noah.gamestates;
 
 import java.awt.Graphics2D;
+import java.awt.image.BufferedImage;
 
 import de.noah.audio.SoundManager;
-import de.noah.core.ObjectManager;
 import de.noah.entity.Entity;
 import de.noah.entity.Player;
+import de.noah.object.SuperObject;
 import de.noah.ui.DialogStateUI;
 
 public class DialogState extends State{
 	
 
-	private boolean objectDialog, npcDialog;
+	private boolean npcDialog, objectDialog;
+	
 	private DialogStateUI dialogStateUI;
-	private ObjectManager objectManager;
+	private BufferedImage npcSprite;
 	private String npcLine;
 	private boolean renderContinueField;
+	
+	private String objectName;
 	
 	// --------------------CONSTRUCTOR---------------------------------------
 
 
-	public DialogState(Player player, Entity[] npcs, DialogStateUI dialogStateUI,SoundManager soundEffectManager, ObjectManager objectManager) {
-		super(player, npcs, soundEffectManager);
+	public DialogState(Player player,SoundManager soundEffectManager, DialogStateUI dialogStateUI) {
+		super(player, soundEffectManager);
 		this.dialogStateUI = dialogStateUI;
-		this.objectManager = objectManager;
 	}
 	
 	// DIALOG STATE INVOKED BY NPC
@@ -67,18 +70,27 @@ public class DialogState extends State{
 	
 	// --------------------UPDATING------------------------------------------
 	
-	@Override
-	public void update() {
+	public void update(Entity dialogPartner, SuperObject object) {
 		
-		if(npcDialog) {
-			Entity dialogPartner = npcs[player.getinteractiableNPC()];
+		if(dialogPartner != null) {
+			
+			npcDialog = true;
+			
 			makeEyeContact(dialogPartner);
 			npcLine = getNextNPCLine(dialogPartner);
 			renderContinueField = !lastNPCLine(dialogPartner);
+			npcSprite = dialogPartner.getSprites()[8];
+			
+			dialogPartner = null;
+	
 
 		}
-		else if(objectDialog) {
+		else if(object != null) {
 			
+			objectDialog = true;
+			
+			objectName = object.getName();
+			object = null;
 		}
 		
 		setSpace(false);
@@ -90,38 +102,20 @@ public class DialogState extends State{
 		
 		if (npcDialog) { 
 			
-			dialogStateUI.draw(g2, npcLine, renderContinueField);
+			dialogStateUI.draw(g2, npcLine, renderContinueField, npcSprite);
+			npcDialog = false;
 			
 		}
 
-		else if (objectDialog) {  
+		else if (objectDialog) {   
 			
-			dialogStateUI.draw(g2, objectManager.getObjectName());
-			objectManager.setInvokeDialogState(false);
+			dialogStateUI.draw(g2, objectName);
+			objectDialog = false;
 			
 		}
 		
 	}
 	
 	// --------------------GETTER/SETTERS-----------------------------------------
-
-
-	public void setObjectDialog(boolean objectDialog) {
-		this.objectDialog = objectDialog;
-	}
-
-
-	public void setNpcDialog(boolean npcDialog) {
-		this.npcDialog = npcDialog;
-	}
-
-	public boolean isObjectDialog() {
-		return objectDialog;
-	}
-
-
-	public boolean isNpcDialog() {
-		return npcDialog;
-	}
 	
 }

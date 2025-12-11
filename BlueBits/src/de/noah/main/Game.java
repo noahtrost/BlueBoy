@@ -13,12 +13,14 @@ import de.noah.entity.Player;
 import de.noah.gamestates.DialogState;
 import de.noah.gamestates.GameState;
 import de.noah.gamestates.PlayState;
+import de.noah.gamestates.TitleState;
 import de.noah.graphics.SpriteManager;
 import de.noah.input.InputManager;
 import de.noah.object.SuperObject;
 import de.noah.tile.TileManager;
 import de.noah.ui.DialogStateUI;
 import de.noah.ui.PlayStateUI;
+import de.noah.ui.TitleStateUI;
 
 public class Game {
 
@@ -27,10 +29,12 @@ public class Game {
 	// GAMESTATES
 	private PlayState playState;
 	private DialogState dialogState;
+	private TitleState titleState;
 
 	// UISTATES
 	private PlayStateUI playStateUI;
 	private DialogStateUI dialogStateUI;
+	private TitleStateUI titleStateUI;
 
 	// SPRITEMANAGER
 	private final SpriteManager spriteManager = new SpriteManager();
@@ -91,20 +95,34 @@ public class Game {
 	public void setupGame() {
 		spriteManager.setUp();
 		tileManager.setUp(spriteManager.getTileSprites());
+		
 		player = new Player(Config.TILE_SIZE * 23, Config.TILE_SIZE * 21, 4, spriteManager.getPlayerSprites());
 		assetSetter.setObjects(objects, spriteManager.getObjectSprites());
 		assetSetter.setNPCS(npcs, spriteManager.getAllNPCsprites());
+
 		objectManager = new ObjectManager(player, objects, soundEffectManager);
-		collisionManager = new CollisionManager(player, npcs, objects, tileManager.getMapTileNum(),
-				tileManager.getTile(), objectManager);
+		
+		collisionManager = new CollisionManager(
+			    player,
+			    npcs,
+			    objects,
+			    tileManager.getMapTileNum(),
+			    tileManager.getTile(),
+			    objectManager
+			);
 		setCollisionManagerToAllEntitys();
+		
 		playStateUI = new PlayStateUI(spriteManager.getUiSprites());
 		dialogStateUI = new DialogStateUI(spriteManager.getUiSprites());
-		gameStateManager.setGameState(GameState.PLAYSTATE);
-		playState = new PlayState(player, npcs, playStateUI, soundEffectManager);
-		dialogState = new DialogState(player,npcs,dialogStateUI, soundEffectManager, objectManager);
+		titleStateUI = new TitleStateUI(spriteManager.getUiSprites());
+		
+		
+		playState = new PlayState(player, soundEffectManager, playStateUI, npcs);
+		dialogState = new DialogState(player, soundEffectManager, dialogStateUI);
+		titleState = new TitleState(player, soundEffectManager, titleStateUI);
 
-		soundManager.playMusic(0);
+		gameStateManager.setGameState(GameState.TITLESTATE);
+		soundManager.playMusic(6);
 		running = true;
 	}
 
@@ -115,16 +133,18 @@ public class Game {
 
 		// IF PLAYER IS IN RANGE OF INTERACTIABLE NPC && PRESSES SPACE
 		if (player.getinteractiableNPC() != -1 && inputManager.isSpaceJustPressed()) {
+			inputManager.setSpaceJustPressed(false);
 			soundEffectManager.playSE("speak");
-			dialogState.setNpcDialog(true);
 			gameStateManager.setGameState(GameState.DIALOGSTATE);
+
 			return;
 		}
 
 		// IF PLAYER TOUCHES OBJECTS WHICH REQUIRES DAILOG
-		if (objectManager.isInvokeDialogState()) {
+		if (objectManager.getDialogNeedingObject() != null) {
+	
 			gameStateManager.setGameState(GameState.DIALOGSTATE);
-			dialogState.setObjectDialog(true);
+			
 			return;
 		}
 
@@ -135,11 +155,26 @@ public class Game {
 
 		// IF PLAYER PRESSES ENTER
 		if (inputManager.isEnterJustPressed()) {
-			dialogState.setNpcDialog(false);
-			dialogState.setObjectDialog(false);
+			objectManager.setDialogNeedingObject(null);
 			gameStateManager.setGameState(GameState.PLAYSTATE);
 		}
 	}
+	
+	// HANDLES CHANGING DIALOGSTATE TO PLAYSTATE
+	private void checkTitleStateToPlayState() {
+
+			// IF PLAYER PRESSES ENTER
+			if (titleState.isInvokePlayState()) {
+				gameStateManager.setGameState(GameState.PLAYSTATE);
+				soundManager.stop();
+				soundManager.playMusic(0);
+			}
+			if(titleState.isInvokeQuitGame()) {
+				soundManager.stop();
+				running = false;
+				System.exit(0);
+			}
+		}
 
 	// INVOKES END OF GAME
 	private void checkEndGame() {
@@ -154,13 +189,18 @@ public class Game {
 	// SETS NEXT GAMESTATE BASED ON CONDITIONS
 	private void setNextGameState() {
 
+		//TITLESTATE -> PLAYSTATE
+		if(gameStateManager.getGameState() == GameState.TITLESTATE) {
+			checkTitleStateToPlayState();
+		}
+		
 		// PLAYSTATE -> DIALOGSTATE
-		if (gameStateManager.getGameState() == GameState.PLAYSTATE) {
+		else if (gameStateManager.getGameState() == GameState.PLAYSTATE) {
 			checkPlayStateToDialogState();
 		}
 
 		// DIALOG -> PLAYSTATE
-		else if (gameStateManager.getGameState() == GameState.DIALOGSTATE) {
+		else if (gameStateManager.getGameState() == GameState.DIALOGSTATE) { 
 			checkDialogStateToPlayState();
 		}
 
@@ -171,7 +211,7 @@ public class Game {
 	// --------------------UPDATING---------------------------
 
 	// PROPAGATES INPUTS TO PLAYER ENTITY
-	private void setPlayerInputs() {
+	private void setPlayStateInputs() {
 		if (inputManager.isUp()) {
 			player.setUp(true);
 		}
@@ -185,29 +225,85 @@ public class Game {
 			player.setRight(true);
 		}
 	}
+	
+	private void setTitleStateInputs() {
+		
+		if(titleState.isNameScreen()) {
+			char c = inputManager.consumeTypedChar();
+			if(c != 0) {
+				titleState.setCharacter(c);
+			}
+		}
+		
+		if (inputManager.isLeftJustPressed()) { 
+			titleState.setLeft(true);
+		}
+		if (inputManager.isRightJustPressed()) { 
+			titleState.setRight(true);
+		}
+		if (inputManager.isEnterJustPressed()) { 
+			titleState.setEnter(true);
+		}
+		if (inputManager.isSpaceJustPressed()) {  
+			titleState.setSpace(true);
+		}
+		
+	}
+	
+	private void setDialogStateInputs() {
+		if (inputManager.isSpaceJustPressed()) { 
+			dialogState.setSpace(true);
+		}
+	}
 
 	// RESET JUST PRESSED INPUTS
 	private void resetJustPressedInputs() {
 		inputManager.setSpaceJustPressed(false);
 		inputManager.setEnterJustPressed(false);
+		inputManager.setUpJustPressed(false);
+		inputManager.setDownJustPressed(false);
+		inputManager.setRightJustPressed(false);
+		inputManager.setLeftJustPressed(false);
 	}
+
 
 	// UPDATES GAME LOGIC
 	public void update() {
-		
+
 		setNextGameState();
 
-		setPlayerInputs();
-
+		//UPDATES TITLESTATE
+		if(gameStateManager.getGameState() == GameState.TITLESTATE) {
+			setTitleStateInputs();
+			titleState.update();
+		}
+		
 		// UPDATES PLATSTATE
-		if (gameStateManager.getGameState() == GameState.PLAYSTATE) {
+		else if (gameStateManager.getGameState() == GameState.PLAYSTATE) {   
+			setPlayStateInputs();
 			playState.update();
+			
 		}
 
 		// UPDATES DIALOGSTATE
-		else if (gameStateManager.getGameState() == GameState.DIALOGSTATE) { 
-			if(inputManager.isSpaceJustPressed()) dialogState.setSpace(true);
-			dialogState.update();
+		else if (gameStateManager.getGameState() == GameState.DIALOGSTATE) {  
+			
+			setDialogStateInputs();
+				
+			
+			
+			Entity dialogPartner;
+			if(player.getinteractiableNPC() == -1) {
+				dialogPartner = null;
+			} else {
+				dialogPartner = npcs[player.getinteractiableNPC()];
+			}
+			
+			SuperObject dialogObject;
+			dialogObject = objectManager.getDialogNeedingObject();
+			
+			
+			dialogState.update(dialogPartner, dialogObject);
 		}
 
 		// RESET THE JUST PRESSED INPUTS
@@ -218,6 +314,14 @@ public class Game {
 
 	// DRAWS GAME
 	public void draw(Graphics2D g2) {
+		
+		// DRAW TITLESTATE - UI
+		if (gameStateManager.getGameState() == GameState.TITLESTATE) {
+					 
+					 titleState.draw(g2);
+					 return;
+
+				}
 
 		// DRAW TILES
 		tileManager.draw(g2, player.getWorldX(), player.getWorldY());
@@ -248,22 +352,21 @@ public class Game {
 //---------------------------------------------------------------------------------------------------------
 
 		// DRAWING UI BASED ON GAMESTATE
-
-		// DRAW PLATSTATE - UI (EXPECTS INDEX OF INTERACTIABLE PLAYER IN RANGE && PLAYER
-		// CURRENT KEY COUNT)
+		
+		// DRAW PLATSTATE - UI
 		if (gameStateManager.getGameState() == GameState.PLAYSTATE) {
 
 			playState.draw(g2);
 
 		}
 
-		// DRAW DIALOGSTATE - UI (EXPECTS INDEX OF INTERACTIABLE PLAYER IN RANGE &&
-		// PLAYER CURRENT KEY COUNT)
-		else if (gameStateManager.getGameState() == GameState.DIALOGSTATE) { 
+		// DRAW DIALOGSTATE - UI
+		else if (gameStateManager.getGameState() == GameState.DIALOGSTATE) {
 
 			dialogState.draw(g2);
 
 		}
+
 	}
 
 	// --------------------GETTER AND SETTERS-------------------------------

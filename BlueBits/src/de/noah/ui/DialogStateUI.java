@@ -2,7 +2,6 @@ package de.noah.ui;
 
 import java.awt.BasicStroke;
 import java.awt.Color;
-import java.awt.Font;
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 
@@ -111,20 +110,28 @@ public class DialogStateUI extends StateUI {
 			g2.drawString(lines[i], x, y + i * 25);
 		}
 	}
+	
+	private void drawNPCSprite(Graphics2D g2, BufferedImage npcSprite) {
+		
+		int x = 488;
+		int y = 5;
+		
+		g2.drawImage(npcSprite, x, y, Config.TILE_SIZE*4, Config.TILE_SIZE*4, null);
+		
+	}
 
 	// --------------------CONTAINER-FOR-OBJECT-DIALOG-----------------------
 
 	private void drawObjectMessage(Graphics2D g2, String objectName) {
-		Font font;
+		
 		g2.setColor(Color.white);
-		font = baseFont.deriveFont(16f);
-		g2.setFont(font);
+		g2.setFont(baseFont.deriveFont(16f));
 
 		switch (objectName) {
-		case "door": {
-			messageToDisplay = "Not enough Keys..";
-			break;
-		}
+			case "door": {
+				messageToDisplay = "Not enough Keys..";
+				break;
+			}
 		}
 
 		g2.drawString(messageToDisplay, Config.TILE_SIZE * 2 + 20, Config.TILE_SIZE + 10);
@@ -133,9 +140,10 @@ public class DialogStateUI extends StateUI {
 	// --------------------DRAWING-------------------------------------------
 
 	// DRAWS DIALOGSTATE INVOKED BY NPC DIALOG
-	public void draw(Graphics2D g2, String npcLine, boolean renderContinueField) {
+	public void draw(Graphics2D g2, String npcLine, boolean renderContinueField, BufferedImage npcSprite) {
 		super.draw(g2);
 		drawDialogBox(g2);
+		drawNPCSprite(g2, npcSprite);
 		drawNPCDialog(g2, npcLine);
 		if (renderContinueField) {
 			drawContinueField(g2);

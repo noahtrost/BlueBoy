@@ -9,8 +9,9 @@ public class InputManager implements KeyListener {
 //--------------------ATTRIBUTES-----------------------------
 	private boolean up, down, left, right, space, pause, enter;
 
-	private boolean spaceJustPressed = false;
-	private boolean enterJustPressed = false;
+	private boolean spaceJustPressed, enterJustPressed, leftJustPressed, rightJustPressed, upJustPressed, downJustPressed;
+	
+	private char typedChar = 0;
 //--------------------CONSTRUCTOR----------------------------
 
 	public InputManager() {}
@@ -18,26 +19,34 @@ public class InputManager implements KeyListener {
 //--------------------REAL-METHODS---------------------------
 	@Override
 	public void keyTyped(KeyEvent e) {
+		typedChar = e.getKeyChar();
+	}
+	
+	public char consumeTypedChar() {
+	    char c = typedChar;
+	    typedChar = 0; 
+	    return c;
 	}
 
 	@Override
 	public void keyPressed(KeyEvent e) {
 		int code = e.getKeyCode();
-		if (code == KeyEvent.VK_W) {
+		
+		if (code == KeyEvent.VK_W && !up) {
+			upJustPressed = true;
 			up = true;
 		}
-		if (code == KeyEvent.VK_S) {
+		if (code == KeyEvent.VK_S && !down) {
+			downJustPressed = true;
 			down = true;
 		}
-		if (code == KeyEvent.VK_A) {
+		if (code == KeyEvent.VK_A && !left) {
+			leftJustPressed = true;
 			left = true;
 		}
-		if (code == KeyEvent.VK_D) {
+		if (code == KeyEvent.VK_D && !right) {
+			rightJustPressed = true;
 			right = true;
-		}
-
-		if (code == KeyEvent.VK_P) {
-			pause = true;
 		}
 
 		if (code == KeyEvent.VK_SPACE && !space) {
@@ -45,10 +54,15 @@ public class InputManager implements KeyListener {
 			space = true;
 		}
 		
-		if (code == KeyEvent.VK_ENTER && !isEnter()) {
-			setEnterJustPressed(true);
-			setEnter(true);
+		if (code == KeyEvent.VK_ENTER && !enter) {
+			enterJustPressed = true;
+			enter = true;
 		}
+		
+		if (code == KeyEvent.VK_P) {
+			pause = true;
+		}
+		
 		
 	}
 	
@@ -57,27 +71,32 @@ public class InputManager implements KeyListener {
 		int code = e.getKeyCode();
 		if (code == KeyEvent.VK_W) {
 			up = false;
+			upJustPressed = false;
 		}
 		if (code == KeyEvent.VK_S) {
 			down = false;
+			downJustPressed = false;
 		}
 		if (code == KeyEvent.VK_A) {
 			left = false;
+			leftJustPressed = false;
 		}
 		if (code == KeyEvent.VK_D) {
 			right = false;
+			rightJustPressed = false;
 		}
-
-		if (code == KeyEvent.VK_P) {
-			pause = false;
-		}
+		
 		if (code == KeyEvent.VK_SPACE) {
 			space = false;
 			spaceJustPressed = false;
 		}
 		if (code == KeyEvent.VK_ENTER) {
-			setEnter(false);
-			setEnterJustPressed(false);
+			enter = false;
+			enterJustPressed = false;
+		}
+
+		if (code == KeyEvent.VK_P) {
+			pause = false;
 		}
 	}
 
@@ -152,6 +171,39 @@ public class InputManager implements KeyListener {
 
 	public void setEnter(boolean enter) {
 		this.enter = enter;
+	}
+	
+	public boolean isLeftJustPressed() {
+		return leftJustPressed;
+		
+	}
+
+	public void setLeftJustPressed(boolean leftJustPressed) {
+		this.leftJustPressed = leftJustPressed;
+	}
+
+	public boolean isRightJustPressed() {
+		return rightJustPressed;
+	}
+
+	public void setRightJustPressed(boolean rightJustPressed) {
+		this.rightJustPressed = rightJustPressed;
+	}
+
+	public boolean isUpJustPressed() {
+		return upJustPressed;
+	}
+
+	public void setUpJustPressed(boolean upJustPressed) {
+		this.upJustPressed = upJustPressed;
+	}
+
+	public boolean isDownJustPressed() {
+		return downJustPressed;
+	}
+
+	public void setDownJustPressed(boolean downJustPressed) {
+		this.downJustPressed = downJustPressed;
 	}
 
 }
